@@ -43,6 +43,7 @@ npx wrangler pages deploy dist --project-name qr-generator
 - Jangan menambahkan analytics, iklan, cookie pihak ketiga, atau remote font/script.
 - Jangan mengirim data QR atau isi input ke server mana pun.
 - Semua pemrosesan gambar/QR dilakukan di client.
+- Fitur clipboard hanya **menulis** gambar ke clipboard lokal; jangan membaca clipboard.
 - Pertahankan `public/_headers` (CSP, Referrer-Policy, Permissions-Policy).
 
 ## Verifikasi sebelum selesai
@@ -56,6 +57,7 @@ npm run typecheck && npm run lint && npm run test && npm run build
 Untuk perubahan UI, uji juga secara manual:
 
 - QR hasil unduhan (PNG & SVG) bisa di-scan.
+- Tombol "Salin ke clipboard" menghasilkan PNG yang bisa di-paste dan tetap ter-scan.
 - DevTools Network tidak menunjukkan request eksternal setelah load.
 - Logo + error correction `H` tetap ter-scan.
 

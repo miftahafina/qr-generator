@@ -19,7 +19,7 @@ Cloudflare Pages.
 
 - [x] Generate QR dari teks atau URL dengan preview realtime
 - [x] Unduh sebagai PNG dan SVG
-- [x] Salin gambar QR ke clipboard (PNG)
+- [x] Salin QR ke clipboard (PNG)
 - [x] Kustomisasi: ukuran, warna foreground/background, margin, level koreksi error, bentuk titik
 - [x] Latar transparan (PNG & SVG)
 - [x] Upload logo di tengah QR (error correction otomatis ke `H`)
@@ -54,9 +54,10 @@ Cloudflare Pages.
 4. Tooling: ESLint, Prettier, Vitest, CI
 5. QR generation + live preview
 6. Kustomisasi + logo + download PNG/SVG
-7. Dark mode
-8. Privacy headers + deploy config Cloudflare Pages
-9. Verifikasi build/lint/typecheck/test
+7. Salin QR ke clipboard
+8. Dark mode
+9. Privacy headers + deploy config Cloudflare Pages
+10. Verifikasi build/lint/typecheck/test
 
 ## Status
 
@@ -66,7 +67,7 @@ Cloudflare Pages.
 - [x] Tooling: ESLint, Prettier, Vitest, CI
 - [x] QR generation + live preview
 - [x] Kustomisasi + logo + download PNG/SVG
-- [x] Salin gambar QR ke clipboard
+- [x] Salin QR ke clipboard
 - [x] Dark mode
 - [x] Privacy headers + deploy config Cloudflare Pages
 - [x] Verifikasi build/lint/typecheck/test
