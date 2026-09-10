@@ -1,7 +1,13 @@
 # QR Code Generator
 
+[![CI](https://github.com/miftahafina/qr-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/miftahafina/qr-generator/actions/workflows/ci.yml)
+
 Generator QR code yang berjalan **100% di browser**. Tanpa backend, tanpa tracking,
 tanpa iklan. Semua pemrosesan terjadi lokal di perangkat kamu.
+
+## Demo
+
+<https://qr-generator.pages.dev>
 
 ## Fitur
 
@@ -53,6 +59,11 @@ directory `dist`.
 - Tidak ada analytics, iklan, atau cookie pihak ketiga.
 - Security header diatur di `public/_headers`.
 
+## Kontribusi
+
+Kontribusi terbuka! Baca [CONTRIBUTING.md](CONTRIBUTING.md) untuk setup, alur commit, dan
+checklist PR. Untuk masalah keamanan, ikuti [SECURITY.md](SECURITY.md).
+
 ## Lisensi
 
-MIT
+MIT — lihat [LICENSE](LICENSE).
