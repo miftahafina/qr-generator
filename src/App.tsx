@@ -50,7 +50,7 @@ export default function App() {
           <div>
             <h1 className="text-lg font-semibold">QR Code Generator</h1>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Dibuat sepenuhnya di browser kamu.
+              100% digenerate di browser Anda!
             </p>
           </div>
           <ThemeToggle theme={theme} onToggle={toggle} />
@@ -90,8 +90,20 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="mx-auto max-w-5xl px-4 pb-8 text-center text-xs text-slate-500 dark:text-slate-400">
-        Tanpa server, tanpa analytics, tanpa iklan. Semua QR dibuat lokal di perangkat kamu.
+      <footer className="mx-auto max-w-5xl space-y-1 px-4 pb-8 text-center text-xs text-slate-500 dark:text-slate-400">
+        <p>Tanpa server, tanpa analytics, tanpa iklan. Semua QR dibuat lokal di perangkat kamu.</p>
+        <p>
+          Oleh{' '}
+          <a
+            href="https://miftahafina.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200"
+          >
+            Miftah Afina
+          </a>{' '}
+          dengan DeepSeek V4 Flash melalui OpenCode
+        </p>
       </footer>
     </div>
   )
