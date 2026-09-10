@@ -152,6 +152,10 @@ export function QRForm({ config, onChange }: Props) {
             </option>
           ))}
         </select>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Koreksi error menentukan seberapa tahan QR terhadap kerusakan. Level lebih tinggi tetap
+          terbaca walau sebagian tertutup, tetapi QR jadi lebih padat.
+        </p>
       </div>
 
       <div className="space-y-2">
