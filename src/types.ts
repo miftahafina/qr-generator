@@ -1,7 +1,10 @@
 import type { DotType, ErrorCorrectionLevel } from 'qr-code-styling'
+import type { ExportFormat } from './lib/qr'
 
 export type DotStyle = DotType
 export type ErrorCorrection = ErrorCorrectionLevel
+
+export type BusyAction = ExportFormat | 'copy'
 
 export interface QRConfig {
   data: string
