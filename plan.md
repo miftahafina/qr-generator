@@ -32,16 +32,16 @@ Cloudflare Pages.
 
 ## Stack
 
-| Bagian      | Pilihan                          |
-| ----------- | -------------------------------- |
-| Build       | Vite                             |
-| UI          | React + TypeScript (strict)      |
-| Styling     | Tailwind CSS                     |
-| QR engine   | `qr-code-styling`                |
-| Test        | Vitest                           |
-| Lint/format | ESLint + Prettier                |
-| CI          | GitHub Actions                   |
-| Hosting     | Cloudflare Pages                 |
+| Bagian      | Pilihan                     |
+| ----------- | --------------------------- |
+| Build       | Vite                        |
+| UI          | React + TypeScript (strict) |
+| Styling     | Tailwind CSS                |
+| QR engine   | `qr-code-styling`           |
+| Test        | Vitest                      |
+| Lint/format | ESLint + Prettier           |
+| CI          | GitHub Actions              |
+| Hosting     | Cloudflare Pages            |
 
 ## Roadmap
 
@@ -59,16 +59,27 @@ Cloudflare Pages.
 
 - [x] Inisiasi git + `.gitignore`
 - [x] Dokumen: `plan.md`, `AGENTS.md`, `README.md`
-- [ ] Scaffold Vite + React + TS, Tailwind, `qr-code-styling`
-- [ ] Tooling: ESLint, Prettier, Vitest, CI
-- [ ] QR generation + live preview
-- [ ] Kustomisasi + logo + download PNG/SVG
-- [ ] Dark mode
-- [ ] Privacy headers + deploy config Cloudflare Pages
-- [ ] Verifikasi build/lint/typecheck/test
+- [x] Scaffold Vite + React + TS, Tailwind, `qr-code-styling`
+- [x] Tooling: ESLint, Prettier, Vitest, CI
+- [x] QR generation + live preview
+- [x] Kustomisasi + logo + download PNG/SVG
+- [x] Dark mode
+- [x] Privacy headers + deploy config Cloudflare Pages
+- [x] Verifikasi build/lint/typecheck/test
 
-## Keputusan terbuka
+## Keputusan
 
-- Warna/bentuk: solid + bentuk titik dasar, atau termasuk gradient/preset gaya?
-- Bahasa UI: Indonesia, Inggris, atau dua-duanya?
-- Domain: `*.pages.dev` dulu atau domain sendiri?
+- **Warna/bentuk**: warna solid + bentuk titik (tanpa gradient).
+- **Bahasa UI**: Indonesia.
+- **Domain**: `*.pages.dev` dulu; domain sendiri menyusul bila perlu.
+- **Logo**: menambahkan logo otomatis menaikkan koreksi error ke `H`.
+- **Privasi**: `imageOptions.saveAsBlob` dimatikan agar tidak ada XHR internal;
+  CSP `connect-src 'none'`.
+
+## Langkah deploy (Cloudflare Pages)
+
+1. Push repo ke GitHub.
+2. Buat project Pages, hubungkan repo.
+3. Build command: `npm run build`, output directory: `dist`.
+4. Atau manual: `npx wrangler pages deploy dist --project-name qr-generator`.
+
