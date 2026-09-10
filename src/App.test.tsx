@@ -31,4 +31,16 @@ describe('App', () => {
 
     expect(textarea).toHaveValue('halo')
   })
+
+  it('memilih bentuk titik lewat tombol sampel', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const option = screen.getByRole('button', { name: 'Titik' })
+    expect(option).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(option)
+
+    expect(option).toHaveAttribute('aria-pressed', 'true')
+  })
 })

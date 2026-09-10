@@ -1,6 +1,7 @@
 import type { ChangeEvent } from 'react'
 import type { DotStyle, ErrorCorrection, QRConfig } from '../types'
 import { ColorField } from './ColorField'
+import { DotStyleOption } from './DotStyleOption'
 
 interface Props {
   config: QRConfig
@@ -121,21 +122,18 @@ export function QRForm({ config, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="qr-dot" className={labelClass}>
-          Bentuk titik
-        </label>
-        <select
-          id="qr-dot"
-          value={config.dotStyle}
-          onChange={(event) => onChange({ dotStyle: event.target.value as DotStyle })}
-          className={inputClass}
-        >
+        <span className={labelClass}>Bentuk titik</span>
+        <div role="group" aria-label="Bentuk titik" className="grid grid-cols-3 gap-2">
           {DOT_STYLES.map((style) => (
-            <option key={style.value} value={style.value}>
-              {style.label}
-            </option>
+            <DotStyleOption
+              key={style.value}
+              style={style.value}
+              label={style.label}
+              selected={config.dotStyle === style.value}
+              onSelect={(dotStyle) => onChange({ dotStyle })}
+            />
           ))}
-        </select>
+        </div>
       </div>
 
       <div className="space-y-2">

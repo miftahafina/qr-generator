@@ -3,7 +3,7 @@ import type { DotStyle, QRConfig } from '../types'
 
 export type ExportFormat = 'png' | 'svg'
 
-function cornerStyleFor(dotStyle: DotStyle): 'square' | 'dot' | 'extra-rounded' {
+export function cornerStyleFor(dotStyle: DotStyle): 'square' | 'dot' | 'extra-rounded' {
   if (dotStyle === 'dots') return 'dot'
   if (dotStyle === 'square') return 'square'
   return 'extra-rounded'
