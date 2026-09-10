@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { QRForm } from './components/QRForm'
 import { QRPreview } from './components/QRPreview'
 import { ThemeToggle } from './components/ThemeToggle'
+import { usePersistentConfig } from './hooks/usePersistentConfig'
 import { useTheme } from './hooks/useTheme'
 import {
   createQRCode,
@@ -10,17 +11,20 @@ import {
   triggerDownload,
   type ExportFormat,
 } from './lib/qr'
-import { DEFAULT_CONFIG, type QRConfig } from './types'
+import type { QRConfig } from './types'
 
 export default function App() {
   const { theme, toggle } = useTheme()
-  const [config, setConfig] = useState<QRConfig>(DEFAULT_CONFIG)
+  const [config, setConfig] = usePersistentConfig()
   const [busy, setBusy] = useState<ExportFormat | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const updateConfig = useCallback((patch: Partial<QRConfig>) => {
-    setConfig((current) => ({ ...current, ...patch }))
-  }, [])
+  const updateConfig = useCallback(
+    (patch: Partial<QRConfig>) => {
+      setConfig((current) => ({ ...current, ...patch }))
+    },
+    [setConfig],
+  )
 
   const download = useCallback(
     async (format: ExportFormat) => {

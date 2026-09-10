@@ -17,11 +17,13 @@ Cloudflare Pages.
 
 ## Fitur MVP
 
-- [ ] Generate QR dari teks atau URL dengan preview realtime
-- [ ] Unduh sebagai PNG dan SVG
-- [ ] Kustomisasi: ukuran, warna foreground/background, margin, level koreksi error, bentuk titik
-- [ ] Upload logo di tengah QR (error correction otomatis ke `H`)
-- [ ] Dark mode (tersimpan di localStorage)
+- [x] Generate QR dari teks atau URL dengan preview realtime
+- [x] Unduh sebagai PNG dan SVG
+- [x] Kustomisasi: ukuran, warna foreground/background, margin, level koreksi error, bentuk titik
+- [x] Latar transparan (PNG & SVG)
+- [x] Upload logo di tengah QR (error correction otomatis ke `H`)
+- [x] Simpan teks/URL dan semua opsi ke localStorage (auto-restore saat reload)
+- [x] Dark mode (tersimpan di localStorage)
 
 ## Non-goals (untuk sekarang)
 
@@ -82,4 +84,3 @@ Cloudflare Pages.
 2. Buat project Pages, hubungkan repo.
 3. Build command: `npm run build`, output directory: `dist`.
 4. Atau manual: `npx wrangler pages deploy dist --project-name qr-generator`.
-
