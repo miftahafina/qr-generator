@@ -1,0 +1,94 @@
+import { useCallback, useState } from 'react'
+import { QRForm } from './components/QRForm'
+import { QRPreview } from './components/QRPreview'
+import { ThemeToggle } from './components/ThemeToggle'
+import { useTheme } from './hooks/useTheme'
+import {
+  createQRCode,
+  fileNameFor,
+  getDownloadBlob,
+  triggerDownload,
+  type ExportFormat,
+} from './lib/qr'
+import { DEFAULT_CONFIG, type QRConfig } from './types'
+
+export default function App() {
+  const { theme, toggle } = useTheme()
+  const [config, setConfig] = useState<QRConfig>(DEFAULT_CONFIG)
+  const [busy, setBusy] = useState<ExportFormat | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  const updateConfig = useCallback((patch: Partial<QRConfig>) => {
+    setConfig((current) => ({ ...current, ...patch }))
+  }, [])
+
+  const download = useCallback(
+    async (format: ExportFormat) => {
+      setBusy(format)
+      setError(null)
+      try {
+        const qr = createQRCode(config)
+        const blob = await getDownloadBlob(qr, format)
+        triggerDownload(blob, fileNameFor(config.data, format))
+      } catch {
+        setError('Gagal membuat file. Coba lagi.')
+      } finally {
+        setBusy(null)
+      }
+    },
+    [config],
+  )
+
+  return (
+    <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <header className="border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
+          <div>
+            <h1 className="text-lg font-semibold">QR Code Generator</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Dibuat sepenuhnya di browser kamu.
+            </p>
+          </div>
+          <ThemeToggle theme={theme} onToggle={toggle} />
+        </div>
+      </header>
+
+      <main className="mx-auto grid max-w-5xl gap-6 px-4 py-8 lg:grid-cols-2">
+        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <h2 className="mb-4 text-base font-semibold">Pengaturan</h2>
+          <QRForm config={config} onChange={updateConfig} />
+        </section>
+
+        <section className="lg:sticky lg:top-8 lg:self-start">
+          <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h2 className="text-base font-semibold">Pratinjau</h2>
+            <QRPreview config={config} />
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => download('png')}
+                disabled={busy !== null}
+                className="flex-1 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {busy === 'png' ? 'Menyiapkan…' : 'Unduh PNG'}
+              </button>
+              <button
+                type="button"
+                onClick={() => download('svg')}
+                disabled={busy !== null}
+                className="flex-1 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                {busy === 'svg' ? 'Menyiapkan…' : 'Unduh SVG'}
+              </button>
+            </div>
+            {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+          </div>
+        </section>
+      </main>
+
+      <footer className="mx-auto max-w-5xl px-4 pb-8 text-center text-xs text-slate-500 dark:text-slate-400">
+        Tanpa server, tanpa analytics, tanpa iklan. Semua QR dibuat lokal di perangkat kamu.
+      </footer>
+    </div>
+  )
+}
