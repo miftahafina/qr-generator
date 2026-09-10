@@ -19,6 +19,7 @@ Cloudflare Pages.
 
 - [x] Generate QR dari teks atau URL dengan preview realtime
 - [x] Unduh sebagai PNG dan SVG
+- [x] Salin gambar QR ke clipboard (PNG)
 - [x] Kustomisasi: ukuran, warna foreground/background, margin, level koreksi error, bentuk titik
 - [x] Latar transparan (PNG & SVG)
 - [x] Upload logo di tengah QR (error correction otomatis ke `H`)
@@ -65,6 +66,7 @@ Cloudflare Pages.
 - [x] Tooling: ESLint, Prettier, Vitest, CI
 - [x] QR generation + live preview
 - [x] Kustomisasi + logo + download PNG/SVG
+- [x] Salin gambar QR ke clipboard
 - [x] Dark mode
 - [x] Privacy headers + deploy config Cloudflare Pages
 - [x] Verifikasi build/lint/typecheck/test
@@ -75,6 +77,8 @@ Cloudflare Pages.
 - **Bahasa UI**: Indonesia.
 - **Domain**: `*.pages.dev` dulu; domain sendiri menyusul bila perlu.
 - **Logo**: menambahkan logo otomatis menaikkan koreksi error ke `H`.
+- **Clipboard**: salin gambar hanya sebagai PNG (`image/png`); browser tanpa dukungan
+  Clipboard API menampilkan pesan error.
 - **Privasi**: `imageOptions.saveAsBlob` dimatikan agar tidak ada XHR internal;
   CSP `connect-src 'none'`.
 

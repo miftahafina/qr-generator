@@ -1,10 +1,11 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { QRForm } from './components/QRForm'
 import { QRPreview } from './components/QRPreview'
 import { ThemeToggle } from './components/ThemeToggle'
 import { usePersistentConfig } from './hooks/usePersistentConfig'
 import { useTheme } from './hooks/useTheme'
 import {
+  copyImageToClipboard,
   createQRCode,
   fileNameFor,
   getDownloadBlob,
@@ -13,11 +14,14 @@ import {
 } from './lib/qr'
 import type { QRConfig } from './types'
 
+type BusyAction = ExportFormat | 'copy'
+
 export default function App() {
   const { theme, toggle } = useTheme()
   const [config, setConfig] = usePersistentConfig()
-  const [busy, setBusy] = useState<ExportFormat | null>(null)
+  const [busy, setBusy] = useState<BusyAction | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
   const updateConfig = useCallback(
     (patch: Partial<QRConfig>) => {
@@ -42,6 +46,25 @@ export default function App() {
     },
     [config],
   )
+
+  const copy = useCallback(async () => {
+    setBusy('copy')
+    setError(null)
+    try {
+      await copyImageToClipboard(createQRCode(config))
+      setCopied(true)
+    } catch {
+      setError('Gagal menyalin. Browser mungkin tidak mendukung.')
+    } finally {
+      setBusy(null)
+    }
+  }, [config])
+
+  useEffect(() => {
+    if (!copied) return
+    const timeout = window.setTimeout(() => setCopied(false), 2000)
+    return () => window.clearTimeout(timeout)
+  }, [copied])
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
@@ -85,6 +108,28 @@ export default function App() {
                 {busy === 'svg' ? 'Menyiapkan…' : 'Unduh SVG'}
               </button>
             </div>
+            <button
+              type="button"
+              onClick={copy}
+              disabled={busy !== null}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4"
+                aria-hidden="true"
+              >
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
+              {busy === 'copy' ? 'Menyalin…' : copied ? 'Tersalin!' : 'Salin ke clipboard'}
+            </button>
             {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
           </div>
         </section>

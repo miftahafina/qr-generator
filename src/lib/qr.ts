@@ -46,6 +46,24 @@ export async function getDownloadBlob(qr: QRCodeStyling, format: ExportFormat): 
   return raw
 }
 
+export function canCopyImage(): boolean {
+  return (
+    typeof navigator !== 'undefined' &&
+    typeof navigator.clipboard?.write === 'function' &&
+    typeof ClipboardItem !== 'undefined'
+  )
+}
+
+export async function copyImageToClipboard(qr: QRCodeStyling): Promise<void> {
+  if (!canCopyImage()) {
+    throw new Error('Clipboard gambar tidak didukung browser ini')
+  }
+  const item = new ClipboardItem({
+    'image/png': getDownloadBlob(qr, 'png'),
+  })
+  await navigator.clipboard.write([item])
+}
+
 export function triggerDownload(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')

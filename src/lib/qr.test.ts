@@ -1,5 +1,13 @@
-import { describe, expect, it } from 'vitest'
-import { buildOptions, createQRCode, fileNameFor, getDownloadBlob } from './qr'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import type QRCodeStyling from 'qr-code-styling'
+import {
+  buildOptions,
+  canCopyImage,
+  copyImageToClipboard,
+  createQRCode,
+  fileNameFor,
+  getDownloadBlob,
+} from './qr'
 import { DEFAULT_CONFIG } from '../types'
 
 describe('fileNameFor', () => {
@@ -64,5 +72,55 @@ describe('createQRCode', () => {
 
     expect(svg).toContain('<svg')
     expect(svg).toContain('</svg>')
+  })
+})
+
+describe('clipboard', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  const fakeQr = (blob: Blob) =>
+    ({ getRawData: vi.fn().mockResolvedValue(blob) }) as unknown as QRCodeStyling
+
+  it('mendeteksi dukungan clipboard', () => {
+    vi.stubGlobal('ClipboardItem', class {})
+    vi.stubGlobal('navigator', { clipboard: { write: vi.fn() } })
+    expect(canCopyImage()).toBe(true)
+  })
+
+  it('mengembalikan false bila tidak didukung', () => {
+    vi.stubGlobal('ClipboardItem', undefined)
+    vi.stubGlobal('navigator', { clipboard: undefined })
+    expect(canCopyImage()).toBe(false)
+  })
+
+  it('menulis gambar PNG ke clipboard', async () => {
+    const write = vi.fn().mockResolvedValue(undefined)
+    const captured: Record<string, Blob | Promise<Blob>>[] = []
+    class FakeClipboardItem {
+      constructor(data: Record<string, Blob | Promise<Blob>>) {
+        captured.push(data)
+      }
+    }
+    vi.stubGlobal('ClipboardItem', FakeClipboardItem)
+    vi.stubGlobal('navigator', { clipboard: { write } })
+
+    await copyImageToClipboard(fakeQr(new Blob(['qr'], { type: 'image/png' })))
+
+    expect(write).toHaveBeenCalledTimes(1)
+    expect(captured).toHaveLength(1)
+    const value = await captured[0]['image/png']
+    expect(value).toBeInstanceOf(Blob)
+    expect(value.type).toBe('image/png')
+  })
+
+  it('melempar bila clipboard gambar tidak didukung', async () => {
+    vi.stubGlobal('ClipboardItem', undefined)
+    vi.stubGlobal('navigator', { clipboard: undefined })
+
+    await expect(copyImageToClipboard(fakeQr(new Blob(['qr'])))).rejects.toThrow(
+      'Clipboard gambar tidak didukung browser ini',
+    )
   })
 })
