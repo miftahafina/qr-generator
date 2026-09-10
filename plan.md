@@ -78,7 +78,7 @@ Cloudflare Pages.
 
 - **Warna/bentuk**: warna solid + bentuk titik (tanpa gradient).
 - **Bahasa UI**: Indonesia.
-- **Domain**: `*.pages.dev` dulu; domain sendiri menyusul bila perlu.
+- **Domain**: `qr.miftahafina.com` (Cloudflare Pages).
 - **Logo**: menambahkan logo otomatis menaikkan koreksi error ke `H`.
 - **Clipboard**: salin gambar hanya sebagai PNG (`image/png`); browser tanpa dukungan
   Clipboard API menampilkan pesan error.

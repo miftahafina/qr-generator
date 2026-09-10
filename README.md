@@ -7,7 +7,7 @@ tanpa iklan. Semua pemrosesan terjadi lokal di perangkat kamu.
 
 ## Demo
 
-<https://qr-generator.pages.dev>
+<https://qr.miftahafina.com>
 
 ## Fitur
 
