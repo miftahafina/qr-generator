@@ -18,7 +18,7 @@ Cloudflare Pages.
 ## Fitur MVP
 
 - [x] Generate QR dari teks atau URL dengan preview realtime
-- [x] Unduh sebagai PNG dan SVG
+- [x] Unduh PNG sekali klik atau pilih PNG/SVG lewat menu di tombol Unduh
 - [x] Salin QR ke clipboard (PNG)
 - [x] Kustomisasi: ukuran, warna foreground/background, margin, level koreksi error, bentuk titik
 - [x] Latar transparan (PNG & SVG)
@@ -58,6 +58,7 @@ Cloudflare Pages.
 8. Dark mode
 9. Privacy headers + deploy config Cloudflare Pages
 10. Verifikasi build/lint/typecheck/test
+11. Polish UI: menu unduh, warna primary, kursor interaktif
 
 ## Status
 
@@ -71,6 +72,7 @@ Cloudflare Pages.
 - [x] Dark mode
 - [x] Privacy headers + deploy config Cloudflare Pages
 - [x] Verifikasi build/lint/typecheck/test
+- [x] Polish UI: menu unduh, warna primary, kursor interaktif
 
 ## Keputusan
 
@@ -80,6 +82,11 @@ Cloudflare Pages.
 - **Logo**: menambahkan logo otomatis menaikkan koreksi error ke `H`.
 - **Clipboard**: salin gambar hanya sebagai PNG (`image/png`); browser tanpa dukungan
   Clipboard API menampilkan pesan error.
+- **Warna primary**: token `--color-primary` (`#038787`), `primary-hover`, dan
+  `primary-light` di `src/index.css`; komponen memakai kelas `primary`/`primary-hover`,
+  bukan warna hardcoded.
+- **Kursor**: kontrol interaktif (button, select, range, checkbox, color, file) memakai
+  `cursor: pointer` lewat base layer di `src/index.css`; disabled tetap `not-allowed`.
 - **Privasi**: `imageOptions.saveAsBlob` dimatikan agar tidak ada XHR internal;
   CSP `connect-src 'none'`.
 

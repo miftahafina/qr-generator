@@ -6,7 +6,7 @@ tanpa iklan. Semua pemrosesan terjadi lokal di perangkat kamu.
 ## Fitur
 
 - Generate QR dari teks atau URL dengan preview realtime
-- Unduh sebagai PNG dan SVG
+- Unduh PNG sekali klik, atau pilih format PNG/SVG lewat menu di tombol Unduh
 - Salin QR ke clipboard sebagai PNG (butuh secure context / HTTPS)
 - Kustomisasi ukuran, warna, margin, level koreksi error, dan bentuk titik
 - Latar transparan (PNG & SVG)

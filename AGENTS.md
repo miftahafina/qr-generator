@@ -36,6 +36,10 @@ npx wrangler pages deploy dist --project-name qr-generator
 - Ikuti gaya dan pola file di sekitarnya sebelum membuat file baru.
 - Komponen React: function component + hooks. Hindari class component.
 - Styling dengan kelas Tailwind; hindari CSS inline kecuali nilai dinamis.
+- **Warna brand**: pakai token `primary`/`primary-hover`/`primary-light` dari
+  `src/index.css`; jangan hardcode warna brand di komponen.
+- **Kursor**: `cursor: pointer` untuk kontrol interaktif sudah diatur global di
+  `src/index.css`; jangan menambah `cursor-pointer` per komponen.
 - Jangan menambah dependency baru tanpa alasan kuat; cek dulu apakah sudah ada yang cocok.
 
 ## Aturan privasi (tidak bisa dinegosiasikan)
