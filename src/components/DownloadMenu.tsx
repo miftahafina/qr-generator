@@ -46,7 +46,7 @@ export function DownloadMenu({ busy, onDownload }: Props) {
         type="button"
         onClick={() => onDownload('png')}
         disabled={disabled}
-        className="inline-flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-l-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-l-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -72,7 +72,7 @@ export function DownloadMenu({ busy, onDownload }: Props) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Opsi format unduhan"
-        className="inline-flex items-center justify-center rounded-r-lg border-l border-indigo-500 bg-indigo-600 px-2.5 text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex items-center justify-center rounded-r-lg border-l border-primary-hover bg-primary px-2.5 text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

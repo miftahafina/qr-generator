@@ -50,7 +50,7 @@ export function DotStyleOption({ style, label, selected, onSelect }: Props) {
       title={label}
       className={`flex flex-col items-center gap-1.5 rounded-lg border p-2 transition ${
         selected
-          ? 'border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950/40'
+          ? 'border-primary bg-primary/10 dark:border-primary-light dark:bg-primary/20'
           : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:hover:border-slate-600 dark:hover:bg-slate-800'
       }`}
     >

@@ -2,6 +2,23 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-primary: #038787;
+  --color-primary-hover: #04a1a1;
+  --color-primary-light: #2bb5b5;
+}
+
+@layer base {
+  button:not(:disabled),
+  select:not(:disabled),
+  input[type='range']:not(:disabled),
+  input[type='checkbox']:not(:disabled),
+  input[type='color']:not(:disabled),
+  input[type='file']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 :root {
   color-scheme: light;
   --checker: #e2e8f0;

@@ -25,7 +25,7 @@ const ERROR_LEVELS: { value: ErrorCorrection; label: string }[] = [
 ]
 
 const inputClass =
-  'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-indigo-400 dark:focus:ring-indigo-900'
+  'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-primary-light dark:focus:ring-primary/40'
 
 const labelClass = 'text-sm font-medium text-slate-700 dark:text-slate-200'
 
@@ -72,7 +72,7 @@ export function QRForm({ config, onChange }: Props) {
           step={16}
           value={config.size}
           onChange={(event) => onChange({ size: Number(event.target.value) })}
-          className="w-full accent-indigo-600"
+          className="w-full accent-primary"
         />
       </div>
 
@@ -88,7 +88,7 @@ export function QRForm({ config, onChange }: Props) {
           step={2}
           value={config.margin}
           onChange={(event) => onChange({ margin: Number(event.target.value) })}
-          className="w-full accent-indigo-600"
+          className="w-full accent-primary"
         />
       </div>
 
@@ -115,7 +115,7 @@ export function QRForm({ config, onChange }: Props) {
             type="checkbox"
             checked={config.transparentBackground}
             onChange={(event) => onChange({ transparentBackground: event.target.checked })}
-            className="h-4 w-4 accent-indigo-600"
+            className="h-4 w-4 accent-primary"
           />
           <span className={labelClass}>Latar transparan</span>
         </label>
@@ -168,7 +168,7 @@ export function QRForm({ config, onChange }: Props) {
             type="file"
             accept="image/png,image/jpeg,image/svg+xml,image/webp"
             onChange={handleLogoChange}
-            className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-indigo-500 dark:text-slate-300"
+            className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-primary-hover dark:text-slate-300"
           />
           {config.logo && (
             <button

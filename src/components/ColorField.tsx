@@ -22,7 +22,7 @@ export function ColorField({ id, label, value, onChange, disabled = false }: Pro
           value={value}
           disabled={disabled}
           onChange={(event) => onChange(event.target.value)}
-          className="h-9 w-12 cursor-pointer rounded-md border border-slate-300 bg-transparent p-0.5 disabled:cursor-not-allowed dark:border-slate-700"
+          className="h-9 w-12 rounded-md border border-slate-300 bg-transparent p-0.5 disabled:cursor-not-allowed dark:border-slate-700"
         />
       </div>
     </div>
