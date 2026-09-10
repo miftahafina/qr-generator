@@ -102,8 +102,22 @@ export function QRForm({ config, onChange }: Props) {
           id="qr-bg"
           label="Warna latar"
           value={config.bgColor}
+          disabled={config.transparentBackground}
           onChange={(bgColor) => onChange({ bgColor })}
         />
+        <label
+          htmlFor="qr-transparent"
+          className="flex items-center gap-2 border-t border-slate-200 pt-3 dark:border-slate-800"
+        >
+          <input
+            id="qr-transparent"
+            type="checkbox"
+            checked={config.transparentBackground}
+            onChange={(event) => onChange({ transparentBackground: event.target.checked })}
+            className="h-4 w-4 accent-indigo-600"
+          />
+          <span className={labelClass}>Latar transparan</span>
+        </label>
       </div>
 
       <div className="space-y-2">

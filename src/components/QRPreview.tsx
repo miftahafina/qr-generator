@@ -29,7 +29,9 @@ export function QRPreview({ config }: Props) {
         ref={containerRef}
         role="img"
         aria-label="Pratinjau QR code"
-        className="w-full max-w-[320px] [&>canvas]:h-auto [&>canvas]:w-full [&>svg]:h-auto [&>svg]:w-full"
+        className={`w-full max-w-[320px] [&>canvas]:h-auto [&>canvas]:w-full [&>svg]:h-auto [&>svg]:w-full ${
+          config.transparentBackground ? 'checkerboard rounded-md' : ''
+        }`}
       />
     </div>
   )

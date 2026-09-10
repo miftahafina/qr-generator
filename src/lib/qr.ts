@@ -26,7 +26,9 @@ export function buildOptions(config: QRConfig): Partial<Options> {
       margin: 6,
     },
     dotsOptions: { color: config.fgColor, type: config.dotStyle },
-    backgroundOptions: { color: config.bgColor },
+    backgroundOptions: {
+      color: config.transparentBackground ? 'transparent' : config.bgColor,
+    },
     cornersSquareOptions: { color: config.fgColor, type: cornerStyleFor(config.dotStyle) },
     cornersDotOptions: { color: config.fgColor },
   }

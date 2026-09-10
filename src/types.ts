@@ -9,6 +9,7 @@ export interface QRConfig {
   margin: number
   fgColor: string
   bgColor: string
+  transparentBackground: boolean
   dotStyle: DotStyle
   errorCorrection: ErrorCorrection
   logo: string | null
@@ -20,6 +21,7 @@ export const DEFAULT_CONFIG: QRConfig = {
   margin: 16,
   fgColor: '#111827',
   bgColor: '#ffffff',
+  transparentBackground: false,
   dotStyle: 'square',
   errorCorrection: 'M',
   logo: null,

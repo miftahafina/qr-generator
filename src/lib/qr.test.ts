@@ -49,6 +49,11 @@ describe('buildOptions', () => {
     const options = buildOptions({ ...DEFAULT_CONFIG, logo })
     expect(options.image).toBe(logo)
   })
+
+  it('memakai latar transparan bila diaktifkan', () => {
+    const options = buildOptions({ ...DEFAULT_CONFIG, transparentBackground: true })
+    expect(options.backgroundOptions).toEqual({ color: 'transparent' })
+  })
 })
 
 describe('createQRCode', () => {

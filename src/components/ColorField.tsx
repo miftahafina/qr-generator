@@ -3,11 +3,12 @@ interface Props {
   label: string
   value: string
   onChange: (value: string) => void
+  disabled?: boolean
 }
 
-export function ColorField({ id, label, value, onChange }: Props) {
+export function ColorField({ id, label, value, onChange, disabled = false }: Props) {
   return (
-    <div className="flex items-center justify-between gap-3">
+    <div className={`flex items-center justify-between gap-3 ${disabled ? 'opacity-50' : ''}`}>
       <label htmlFor={id} className="text-sm font-medium text-slate-700 dark:text-slate-200">
         {label}
       </label>
@@ -19,8 +20,9 @@ export function ColorField({ id, label, value, onChange }: Props) {
           id={id}
           type="color"
           value={value}
+          disabled={disabled}
           onChange={(event) => onChange(event.target.value)}
-          className="h-9 w-12 cursor-pointer rounded-md border border-slate-300 bg-transparent p-0.5 dark:border-slate-700"
+          className="h-9 w-12 cursor-pointer rounded-md border border-slate-300 bg-transparent p-0.5 disabled:cursor-not-allowed dark:border-slate-700"
         />
       </div>
     </div>
