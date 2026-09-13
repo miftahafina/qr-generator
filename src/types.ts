@@ -19,7 +19,7 @@ export interface QRConfig {
 }
 
 export const DEFAULT_CONFIG: QRConfig = {
-  data: 'https://example.com',
+  data: '',
   size: 320,
   margin: 16,
   fgColor: '#111827',

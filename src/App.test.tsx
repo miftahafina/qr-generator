@@ -69,6 +69,9 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
+    const toggle = screen.getByRole('button', { name: /Pengaturan kustomisasi/ })
+    await user.click(toggle)
+
     const option = screen.getByRole('button', { name: 'Titik' })
     expect(option).toHaveAttribute('aria-pressed', 'false')
 
