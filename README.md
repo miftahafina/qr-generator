@@ -3,7 +3,7 @@
 [![CI](https://github.com/miftahafina/qr-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/miftahafina/qr-generator/actions/workflows/ci.yml)
 
 Generator QR code yang berjalan **100% di browser**. Tanpa backend, tanpa tracking,
-tanpa iklan. Semua pemrosesan terjadi lokal di perangkat kamu.
+tanpa iklan. Semua pemrosesan terjadi lokal di perangkat Anda.
 
 ## Demo
 

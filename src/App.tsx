@@ -134,7 +134,7 @@ export default function App() {
       </main>
 
       <footer className="mx-auto max-w-5xl space-y-1 px-4 pb-8 text-center text-xs text-slate-500 dark:text-slate-400">
-        <p>Tanpa server, tanpa analytics, tanpa iklan. Semua QR dibuat lokal di perangkat kamu.</p>
+        <p>Tanpa server, tanpa analytics, tanpa iklan. Semua QR dibuat lokal di perangkat Anda.</p>
         <p>
           Oleh{' '}
           <a

@@ -192,7 +192,9 @@ export function QRForm({ config, onChange }: Props) {
             <select
               id="qr-error"
               value={config.errorCorrection}
-              onChange={(event) => onChange({ errorCorrection: event.target.value as ErrorCorrection })}
+              onChange={(event) =>
+                onChange({ errorCorrection: event.target.value as ErrorCorrection })
+              }
               className={inputClass}
             >
               {ERROR_LEVELS.map((level) => (
@@ -202,8 +204,8 @@ export function QRForm({ config, onChange }: Props) {
               ))}
             </select>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Koreksi error menentukan seberapa tahan QR terhadap kerusakan. Level lebih tinggi tetap
-              terbaca walau sebagian tertutup, tetapi QR jadi lebih padat.
+              Koreksi error menentukan seberapa tahan QR terhadap kerusakan. Level lebih tinggi
+              tetap terbaca walau sebagian tertutup, tetapi QR jadi lebih padat.
             </p>
           </div>
 
