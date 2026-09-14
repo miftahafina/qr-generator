@@ -14,9 +14,11 @@ export interface QRConfig {
   bgColor: string
   transparentBackground: boolean
   dotStyle: DotStyle
-  errorCorrection: ErrorCorrection
+  errorCorrection: ErrorCorrectionLevel
   logo: string | null
 }
+
+export type QRMode = 'single' | 'bulk'
 
 export const DEFAULT_CONFIG: QRConfig = {
   data: '',

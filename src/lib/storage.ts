@@ -1,7 +1,10 @@
-import type { DotStyle, ErrorCorrection, QRConfig } from '../types'
+import type { DotStyle, ErrorCorrection, QRConfig, QRMode } from '../types'
 import { DEFAULT_CONFIG } from '../types'
 
 const STORAGE_KEY = 'qr-generator-config'
+const MODE_KEY = 'qr-generator-mode'
+
+const MODES: QRMode[] = ['single', 'bulk']
 
 const DOT_STYLES: DotStyle[] = [
   'dots',
@@ -73,6 +76,25 @@ export function saveConfig(config: QRConfig): void {
   if (typeof window === 'undefined') return
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config))
+  } catch {
+    return
+  }
+}
+
+export function loadMode(): QRMode {
+  if (typeof window === 'undefined') return 'single'
+  try {
+    const value = window.localStorage.getItem(MODE_KEY) as QRMode
+    return MODES.includes(value) ? value : 'single'
+  } catch {
+    return 'single'
+  }
+}
+
+export function saveMode(mode: QRMode): void {
+  if (typeof window === 'undefined') return
+  try {
+    window.localStorage.setItem(MODE_KEY, mode)
   } catch {
     return
   }

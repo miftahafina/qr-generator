@@ -1,12 +1,17 @@
 import { useState } from 'react'
 import type { ChangeEvent } from 'react'
-import type { DotStyle, ErrorCorrection, QRConfig } from '../types'
+import type { DotStyle, ErrorCorrection, QRConfig, QRMode } from '../types'
 import { ColorField } from './ColorField'
 import { DotStyleOption } from './DotStyleOption'
 
 interface Props {
   config: QRConfig
   onChange: (patch: Partial<QRConfig>) => void
+  mode: QRMode
+  onModeChange: (mode: QRMode) => void
+  bulkFileName: string | null
+  bulkCount: number
+  onBulkFileChange: (file: File) => void
 }
 
 const DOT_STYLES: { value: DotStyle; label: string }[] = [
@@ -30,7 +35,20 @@ const inputClass =
 
 const labelClass = 'text-sm font-medium text-slate-700 dark:text-slate-200'
 
-export function QRForm({ config, onChange }: Props) {
+const MODES: { value: QRMode; label: string; hint: string }[] = [
+  { value: 'single', label: 'Tunggal', hint: 'Buat satu QR dari teks atau URL.' },
+  { value: 'bulk', label: 'Massal', hint: 'Buat banyak QR dari file .txt/.csv, satu per baris.' },
+]
+
+export function QRForm({
+  config,
+  onChange,
+  mode,
+  onModeChange,
+  bulkFileName,
+  bulkCount,
+  onBulkFileChange,
+}: Props) {
   const [showCustomization, setShowCustomization] = useState(false)
   const handleLogoChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -45,21 +63,75 @@ export function QRForm({ config, onChange }: Props) {
     event.target.value = ''
   }
 
+  const handleBulkFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (file) onBulkFileChange(file)
+  }
+
+  const activeMode = MODES.find((item) => item.value === mode) ?? MODES[0]
+
   return (
     <form className="space-y-5" onSubmit={(event) => event.preventDefault()}>
       <div className="space-y-2">
-        <label htmlFor="qr-data" className={labelClass}>
-          Teks atau URL
-        </label>
-        <textarea
-          id="qr-data"
-          value={config.data}
-          onChange={(event) => onChange({ data: event.target.value })}
-          rows={3}
-          spellCheck={false}
-          placeholder="Masukkan teks atau URL"
-          className={`${inputClass} resize-y font-mono`}
-        />
+        <div
+          role="tablist"
+          aria-label="Mode input"
+          className="flex rounded-lg border border-slate-300 p-1 dark:border-slate-700"
+        >
+          {MODES.map((item) => (
+            <button
+              key={item.value}
+              type="button"
+              role="tab"
+              aria-selected={mode === item.value}
+              onClick={() => onModeChange(item.value)}
+              className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition ${
+                mode === item.value
+                  ? 'bg-primary text-white'
+                  : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        {mode === 'single' ? (
+          <>
+            <label htmlFor="qr-data" className={labelClass}>
+              Teks atau URL
+            </label>
+            <textarea
+              id="qr-data"
+              value={config.data}
+              onChange={(event) => onChange({ data: event.target.value })}
+              rows={3}
+              spellCheck={false}
+              placeholder="Masukkan teks atau URL"
+              className={`${inputClass} resize-y font-mono`}
+            />
+          </>
+        ) : (
+          <>
+            <label htmlFor="qr-bulk-file" className={labelClass}>
+              File teks/URL (satu per baris)
+            </label>
+            <input
+              id="qr-bulk-file"
+              type="file"
+              accept=".txt,.csv"
+              onChange={handleBulkFile}
+              className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-primary-hover dark:text-slate-300"
+            />
+            {bulkFileName && (
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {bulkFileName} — {bulkCount} entri
+              </p>
+            )}
+          </>
+        )}
+        <p className="text-xs text-slate-500 dark:text-slate-400">{activeMode.hint}</p>
       </div>
 
       <button

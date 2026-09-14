@@ -15,6 +15,7 @@ vi.mock('qr-code-styling', () => ({
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  window.localStorage.clear()
 })
 
 describe('App', () => {
@@ -78,5 +79,35 @@ describe('App', () => {
     await user.click(option)
 
     expect(option).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('beralih ke tab massal dan menyembunyikan tombol salin', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const bulkTab = screen.getByRole('tab', { name: 'Massal' })
+    expect(bulkTab).toHaveAttribute('aria-selected', 'false')
+
+    await user.click(bulkTab)
+
+    expect(bulkTab).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Tunggal' })).toHaveAttribute('aria-selected', 'false')
+    expect(screen.getByLabelText('File teks/URL (satu per baris)')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Unduh ZIP' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Salin ke clipboard' })).not.toBeInTheDocument()
+  })
+
+  it('menghitung entri setelah memilih file di tab massal', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('tab', { name: 'Massal' }))
+
+    const input = screen.getByLabelText('File teks/URL (satu per baris)') as HTMLInputElement
+    const file = new File(['https://a.com\nhalo\n'], 'daftar.txt', { type: 'text/plain' })
+    await user.upload(input, file)
+
+    expect(await screen.findByText('daftar.txt — 2 entri')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Unduh ZIP' })).not.toBeDisabled()
   })
 })

@@ -25,6 +25,9 @@ Cloudflare Pages.
 - [x] Upload logo di tengah QR (error correction otomatis ke `H`)
 - [x] Simpan teks/URL dan semua opsi ke localStorage (auto-restore saat reload)
 - [x] Dark mode (tersimpan di localStorage)
+- [x] Tab input **Tunggal/Massal**: mode massal membaca file .txt/.csv (satu entri per
+  baris) dan tombol Unduh menghasilkan ZIP kontekstual; mode tunggal tetap mengunduh
+  file individual
 
 ## Non-goals (untuk sekarang)
 

@@ -75,7 +75,7 @@ export function triggerDownload(blob: Blob, filename: string): void {
   URL.revokeObjectURL(url)
 }
 
-export function fileNameFor(data: string, format: ExportFormat): string {
+export function baseNameFor(data: string): string {
   const base = data
     .trim()
     .toLowerCase()
@@ -83,5 +83,9 @@ export function fileNameFor(data: string, format: ExportFormat): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 40)
-  return `${base || 'qrcode'}.${format}`
+  return base || 'qrcode'
+}
+
+export function fileNameFor(data: string, format: ExportFormat): string {
+  return `${baseNameFor(data)}.${format}`
 }

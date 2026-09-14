@@ -5,6 +5,8 @@ import type { BusyAction } from '../types'
 interface Props {
   busy: BusyAction | null
   onDownload: (format: ExportFormat) => void
+  label?: string
+  disabled?: boolean
 }
 
 const FORMATS: { value: ExportFormat; label: string }[] = [
@@ -12,10 +14,10 @@ const FORMATS: { value: ExportFormat; label: string }[] = [
   { value: 'svg', label: 'SVG' },
 ]
 
-export function DownloadMenu({ busy, onDownload }: Props) {
+export function DownloadMenu({ busy, onDownload, label = 'Unduh', disabled = false }: Props) {
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const disabled = busy !== null
+  const isDisabled = busy !== null || disabled
 
   useEffect(() => {
     if (!open) return
@@ -45,7 +47,7 @@ export function DownloadMenu({ busy, onDownload }: Props) {
       <button
         type="button"
         onClick={() => onDownload('png')}
-        disabled={disabled}
+        disabled={isDisabled}
         className="inline-flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-l-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         <svg
@@ -63,12 +65,12 @@ export function DownloadMenu({ busy, onDownload }: Props) {
           <polyline points="7 10 12 15 17 10" />
           <line x1="12" x2="12" y1="15" y2="3" />
         </svg>
-        {busy === 'png' || busy === 'svg' ? 'Menyiapkan…' : 'Unduh'}
+        {busy === 'png' || busy === 'svg' ? 'Menyiapkan…' : label}
       </button>
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        disabled={disabled}
+        disabled={isDisabled}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Opsi format unduhan"
