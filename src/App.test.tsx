@@ -59,7 +59,7 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    const textarea = screen.getByLabelText('Teks atau URL')
+    const textarea = screen.getByRole('textbox', { name: 'Teks atau URL' })
     await user.clear(textarea)
     await user.type(textarea, 'halo')
 
@@ -70,16 +70,21 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    const typeSelect = screen.getByLabelText('Tipe konten')
-    await user.selectOptions(typeSelect, 'whatsapp')
+    await user.click(screen.getByRole('button', { name: 'WhatsApp' }))
 
     expect(screen.getByLabelText(/Nomor WhatsApp/)).toBeInTheDocument()
     expect(screen.getByLabelText('Pesan awal (opsional)')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Teks atau URL')).not.toBeInTheDocument()
+    expect(screen.queryByRole('textbox', { name: 'Teks atau URL' })).not.toBeInTheDocument()
 
-    await user.selectOptions(typeSelect, 'wifi')
+    await user.click(screen.getByRole('button', { name: 'WiFi' }))
     expect(screen.getByLabelText('Nama jaringan (SSID)')).toBeInTheDocument()
     expect(screen.getByLabelText('Keamanan')).toBeInTheDocument()
+
+    expect(screen.getByRole('button', { name: 'WhatsApp' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    )
+    expect(screen.getByRole('button', { name: 'WiFi' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('memilih bentuk titik lewat tombol sampel', async () => {

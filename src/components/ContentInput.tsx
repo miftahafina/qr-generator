@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react'
+import type { ReactNode } from 'react'
 import type {
   ContentType,
   EmailContent,
@@ -7,17 +7,91 @@ import type {
   WifiContent,
   WifiSecurity,
 } from '../types'
+import { ContentTypeOption } from './ContentTypeOption'
 
 interface Props {
   config: QRConfig
   onChange: (patch: Partial<QRConfig>) => void
 }
 
-const CONTENT_TYPES: { value: ContentType; label: string }[] = [
-  { value: 'text', label: 'Teks atau URL' },
-  { value: 'wifi', label: 'WiFi' },
-  { value: 'whatsapp', label: 'WhatsApp' },
-  { value: 'email', label: 'Email' },
+const CONTENT_TYPES: { value: ContentType; label: string; icon: ReactNode }[] = [
+  {
+    value: 'text',
+    label: 'Teks atau URL',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-5 w-5"
+      >
+        <rect width="20" height="16" x="2" y="4" rx="2" />
+        <path d="M6 8h.01M10 8h.01M14 8h.01M6 12h.01M10 12h.01M14 12h.01M6 16h.01M10 16h.01M14 16h.01" />
+      </svg>
+    ),
+  },
+  {
+    value: 'wifi',
+    label: 'WiFi',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-5 w-5"
+      >
+        <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+        <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+        <circle cx="12" cy="20" r="1" />
+      </svg>
+    ),
+  },
+  {
+    value: 'whatsapp',
+    label: 'WhatsApp',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-5 w-5"
+      >
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+      </svg>
+    ),
+  },
+  {
+    value: 'email',
+    label: 'Email',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-5 w-5"
+      >
+        <rect width="20" height="16" x="2" y="4" rx="2" />
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+      </svg>
+    ),
+  },
 ]
 
 const WIFI_SECURITIES: { value: WifiSecurity; label: string }[] = [
@@ -39,28 +113,25 @@ export function ContentInput({ config, onChange }: Props) {
   const updateEmail = (patch: Partial<EmailContent>) =>
     onChange({ email: { ...config.email, ...patch } })
 
-  const onContentType = (event: ChangeEvent<HTMLSelectElement>) => {
-    onChange({ contentType: event.target.value as ContentType })
-  }
-
   return (
     <div className="space-y-2">
       <div className="space-y-2">
-        <label htmlFor="qr-content-type" className={labelClass}>
-          Tipe konten
-        </label>
-        <select
-          id="qr-content-type"
-          value={config.contentType}
-          onChange={onContentType}
-          className={inputClass}
+        <span className={labelClass}>Tipe konten</span>
+        <div
+          role="group"
+          aria-label="Tipe konten"
+          className="grid grid-cols-2 gap-2 sm:grid-cols-4"
         >
           {CONTENT_TYPES.map((item) => (
-            <option key={item.value} value={item.value}>
-              {item.label}
-            </option>
+            <ContentTypeOption
+              key={item.value}
+              label={item.label}
+              icon={item.icon}
+              selected={config.contentType === item.value}
+              onSelect={() => onChange({ contentType: item.value })}
+            />
           ))}
-        </select>
+        </div>
       </div>
 
       {config.contentType === 'text' && (
