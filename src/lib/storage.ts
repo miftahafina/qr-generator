@@ -1,10 +1,24 @@
-import type { DotStyle, ErrorCorrection, QRConfig, QRMode } from '../types'
+import type {
+  ContentType,
+  DotStyle,
+  EmailContent,
+  ErrorCorrection,
+  QRConfig,
+  QRMode,
+  WhatsappContent,
+  WifiContent,
+  WifiSecurity,
+} from '../types'
 import { DEFAULT_CONFIG } from '../types'
 
 const STORAGE_KEY = 'qr-generator-config'
 const MODE_KEY = 'qr-generator-mode'
 
 const MODES: QRMode[] = ['single', 'bulk']
+
+const CONTENT_TYPES: ContentType[] = ['text', 'wifi', 'whatsapp', 'email']
+
+const WIFI_SECURITIES: WifiSecurity[] = ['nopass', 'WPA', 'WEP']
 
 const DOT_STYLES: DotStyle[] = [
   'dots',
@@ -30,6 +44,39 @@ function isHexColor(value: unknown): value is string {
   return typeof value === 'string' && /^#[0-9a-fA-F]{6}$/.test(value)
 }
 
+function parseString(value: unknown, fallback: string): string {
+  return typeof value === 'string' ? value : fallback
+}
+
+function parseWifi(value: unknown): WifiContent {
+  if (!isRecord(value)) return DEFAULT_CONFIG.wifi
+  return {
+    ssid: parseString(value.ssid, DEFAULT_CONFIG.wifi.ssid),
+    password: parseString(value.password, DEFAULT_CONFIG.wifi.password),
+    security: WIFI_SECURITIES.includes(value.security as WifiSecurity)
+      ? (value.security as WifiSecurity)
+      : DEFAULT_CONFIG.wifi.security,
+    hidden: typeof value.hidden === 'boolean' ? value.hidden : DEFAULT_CONFIG.wifi.hidden,
+  }
+}
+
+function parseWhatsapp(value: unknown): WhatsappContent {
+  if (!isRecord(value)) return DEFAULT_CONFIG.whatsapp
+  return {
+    number: parseString(value.number, DEFAULT_CONFIG.whatsapp.number),
+    message: parseString(value.message, DEFAULT_CONFIG.whatsapp.message),
+  }
+}
+
+function parseEmail(value: unknown): EmailContent {
+  if (!isRecord(value)) return DEFAULT_CONFIG.email
+  return {
+    to: parseString(value.to, DEFAULT_CONFIG.email.to),
+    subject: parseString(value.subject, DEFAULT_CONFIG.email.subject),
+    body: parseString(value.body, DEFAULT_CONFIG.email.body),
+  }
+}
+
 export function parseConfig(raw: string | null): QRConfig {
   if (!raw) return DEFAULT_CONFIG
 
@@ -43,7 +90,13 @@ export function parseConfig(raw: string | null): QRConfig {
   if (!isRecord(parsed)) return DEFAULT_CONFIG
 
   return {
-    data: typeof parsed.data === 'string' ? parsed.data : DEFAULT_CONFIG.data,
+    contentType: CONTENT_TYPES.includes(parsed.contentType as ContentType)
+      ? (parsed.contentType as ContentType)
+      : DEFAULT_CONFIG.contentType,
+    data: parseString(parsed.data, DEFAULT_CONFIG.data),
+    wifi: parseWifi(parsed.wifi),
+    whatsapp: parseWhatsapp(parsed.whatsapp),
+    email: parseEmail(parsed.email),
     size: clampNumber(parsed.size, 128, 1024, DEFAULT_CONFIG.size),
     margin: clampNumber(parsed.margin, 0, 64, DEFAULT_CONFIG.margin),
     fgColor: isHexColor(parsed.fgColor) ? parsed.fgColor : DEFAULT_CONFIG.fgColor,

@@ -13,13 +13,9 @@ import {
   triggerDownload,
   type ExportFormat,
 } from './lib/qr'
-import {
-  MAX_BULK_ENTRIES,
-  bulkZipFileName,
-  createBulkZip,
-  parseBulkContent,
-} from './lib/bulk'
+import { MAX_BULK_ENTRIES, bulkZipFileName, createBulkZip, parseBulkContent } from './lib/bulk'
 import { loadMode, saveMode } from './lib/storage'
+import { buildPayload } from './lib/payload'
 import { DEFAULT_CONFIG, type BusyAction, type QRConfig, type QRMode } from './types'
 
 export default function App() {
@@ -97,9 +93,7 @@ export default function App() {
       return
     }
     if (items.length > MAX_BULK_ENTRIES) {
-      setBulkFileError(
-        `Maksimal ${MAX_BULK_ENTRIES} entri per file (file ini ${items.length}).`,
-      )
+      setBulkFileError(`Maksimal ${MAX_BULK_ENTRIES} entri per file (file ini ${items.length}).`)
       setBulkItems([])
       setBulkFileName(null)
       return
@@ -121,9 +115,10 @@ export default function App() {
           const blob = await createBulkZip(bulkItems, config, format)
           triggerDownload(blob, bulkZipFileName())
         } else {
-          const qr = createQRCode(config)
+          const data = buildPayload(config)
+          const qr = createQRCode({ ...config, data })
           const blob = await getDownloadBlob(qr, format)
-          triggerDownload(blob, fileNameFor(config.data, format))
+          triggerDownload(blob, fileNameFor(data, format))
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Gagal membuat file. Coba lagi.')
@@ -138,7 +133,7 @@ export default function App() {
     setBusy('copy')
     setError(null)
     try {
-      await copyImageToClipboard(createQRCode(config))
+      await copyImageToClipboard(createQRCode({ ...config, data: buildPayload(config) }))
       setCopied(true)
     } catch {
       setError('Gagal menyalin. Browser mungkin tidak mendukung.')
@@ -166,7 +161,8 @@ export default function App() {
   }, [setConfig])
 
   const isBulk = mode === 'bulk'
-  const previewConfig = isBulk ? { ...config, data: bulkItems[0] ?? '' } : config
+  const payload = isBulk ? (bulkItems[0] ?? '') : buildPayload(config)
+  const previewConfig = { ...config, data: payload }
   const bulkReady = !isBulk || bulkItems.length > 0
 
   return (

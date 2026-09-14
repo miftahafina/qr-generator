@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ChangeEvent } from 'react'
 import type { DotStyle, ErrorCorrection, QRConfig, QRMode } from '../types'
 import { ColorField } from './ColorField'
+import { ContentInput } from './ContentInput'
 import { DotStyleOption } from './DotStyleOption'
 
 interface Props {
@@ -113,25 +114,10 @@ export function QRForm({
         </div>
 
         {mode === 'single' ? (
-          <>
-            <label htmlFor="qr-data" className={labelClass}>
-              Teks atau URL
-            </label>
-            <textarea
-              id="qr-data"
-              value={config.data}
-              onChange={(event) => onChange({ data: event.target.value })}
-              rows={3}
-              spellCheck={false}
-              placeholder="Masukkan teks atau URL"
-              className={`${inputClass} resize-y font-mono`}
-            />
-          </>
+          <ContentInput config={config} onChange={onChange} />
         ) : (
           <>
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              Sumber
-            </span>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Sumber</span>
             <div
               role="tablist"
               aria-label="Sumber entri massal"
@@ -188,9 +174,7 @@ export function QRForm({
                   className={`${inputClass} resize-y font-mono`}
                 />
                 {bulkCount > 0 && (
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {bulkCount} entri
-                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{bulkCount} entri</p>
                 )}
               </>
             )}

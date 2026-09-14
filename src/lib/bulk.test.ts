@@ -13,9 +13,11 @@ vi.mock('qr-code-styling', () => ({
 
 describe('parseBulkContent', () => {
   it('memisah baris, memangkas spasi, dan membuang baris kosong', () => {
-    expect(
-      parseBulkContent('https://a.com\n\n  halo  \r\nhttps://b.com'),
-    ).toEqual(['https://a.com', 'halo', 'https://b.com'])
+    expect(parseBulkContent('https://a.com\n\n  halo  \r\nhttps://b.com')).toEqual([
+      'https://a.com',
+      'halo',
+      'https://b.com',
+    ])
   })
 
   it('mengembalikan array kosong untuk teks kosong', () => {
@@ -25,9 +27,7 @@ describe('parseBulkContent', () => {
 
 describe('bulkRekapContent', () => {
   it('memetakan nomor urut ke konten mentah', () => {
-    expect(bulkRekapContent(['https://a.com', ' halo '])).toBe(
-      '0001 - https://a.com\n0002 - halo',
-    )
+    expect(bulkRekapContent(['https://a.com', ' halo '])).toBe('0001 - https://a.com\n0002 - halo')
   })
 })
 
@@ -41,11 +41,7 @@ describe('createBulkZip', () => {
 
   it('membuat satu file QR per entri dengan nomor urut', async () => {
     const blob = await createBulkZip(['https://a.com', 'https://b.com'], DEFAULT_CONFIG, 'png')
-    expect(await loadFiles(blob)).toEqual([
-      '0001 - a-com.png',
-      '0002 - b-com.png',
-      'daftar.txt',
-    ])
+    expect(await loadFiles(blob)).toEqual(['0001 - a-com.png', '0002 - b-com.png', 'daftar.txt'])
   })
 
   it('memakai nomor urut unik untuk entri yang sama', async () => {

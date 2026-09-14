@@ -18,6 +18,8 @@ Cloudflare Pages.
 ## Fitur MVP
 
 - [x] Generate QR dari teks atau URL dengan preview realtime
+- [x] Tipe konten terstruktur: WiFi, WhatsApp (wa.me), dan Email (mailto) lewat form
+      dinamis; payload dihasilkan secara client-side
 - [x] Unduh PNG sekali klik atau pilih PNG/SVG lewat menu di tombol Unduh
 - [x] Salin QR ke clipboard (PNG)
 - [x] Kustomisasi: ukuran, warna foreground/background, margin, level koreksi error, bentuk titik
@@ -26,10 +28,10 @@ Cloudflare Pages.
 - [x] Simpan teks/URL dan semua opsi ke localStorage (auto-restore saat reload)
 - [x] Dark mode (tersimpan di localStorage)
 - [x] Tab input **Tunggal/Massal**: mode massal membaca file .txt/.csv (satu entri per
-  baris) dan tombol Unduh menghasilkan ZIP kontekstual; mode tunggal tetap mengunduh
-  file individual
+      baris) dan tombol Unduh menghasilkan ZIP kontekstual; mode tunggal tetap mengunduh
+      file individual
 - [x] Mode massal mendukung tempel teks langsung dan menyertakan `daftar.txt`
-  (pemetaan nomor urut → konten) di dalam ZIP
+      (pemetaan nomor urut → konten) di dalam ZIP
 
 ## Non-goals (untuk sekarang)
 
@@ -82,6 +84,9 @@ Cloudflare Pages.
 ## Keputusan
 
 - **Warna/bentuk**: warna solid + bentuk titik (tanpa gradient).
+- **Tipe konten**: `contentType` (`text`/`wifi`/`whatsapp`/`email`) disimpan di config;
+  field terstruktur (SSID, nomor WA, alamat email, dst.) juga di-persist ke
+  localStorage. Payload final dihitung lewat `buildPayload` di `lib/payload.ts`.
 - **Bahasa UI**: Indonesia.
 - **Domain**: `qr.miftahafina.com` (Cloudflare Pages).
 - **Logo**: menambahkan logo otomatis menaikkan koreksi error ke `H`.

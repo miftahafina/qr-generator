@@ -66,6 +66,22 @@ describe('App', () => {
     expect(textarea).toHaveValue('halo')
   })
 
+  it('menampilkan form dinamis sesuai tipe konten', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const typeSelect = screen.getByLabelText('Tipe konten')
+    await user.selectOptions(typeSelect, 'whatsapp')
+
+    expect(screen.getByLabelText(/Nomor WhatsApp/)).toBeInTheDocument()
+    expect(screen.getByLabelText('Pesan awal (opsional)')).toBeInTheDocument()
+    expect(screen.queryByLabelText('Teks atau URL')).not.toBeInTheDocument()
+
+    await user.selectOptions(typeSelect, 'wifi')
+    expect(screen.getByLabelText('Nama jaringan (SSID)')).toBeInTheDocument()
+    expect(screen.getByLabelText('Keamanan')).toBeInTheDocument()
+  })
+
   it('memilih bentuk titik lewat tombol sampel', async () => {
     const user = userEvent.setup()
     render(<App />)
