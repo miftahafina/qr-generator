@@ -13,7 +13,12 @@ import {
   triggerDownload,
   type ExportFormat,
 } from './lib/qr'
-import { bulkZipFileName, createBulkZip, parseBulkContent } from './lib/bulk'
+import {
+  MAX_BULK_ENTRIES,
+  bulkZipFileName,
+  createBulkZip,
+  parseBulkContent,
+} from './lib/bulk'
 import { loadMode, saveMode } from './lib/storage'
 import { DEFAULT_CONFIG, type BusyAction, type QRConfig, type QRMode } from './types'
 
@@ -21,10 +26,13 @@ export default function App() {
   const { theme, toggle } = useTheme()
   const [config, setConfig] = usePersistentConfig()
   const [mode, setMode] = useState<QRMode>(loadMode)
+  const [bulkSource, setBulkSource] = useState<'file' | 'paste'>('file')
+  const [pasteText, setPasteText] = useState('')
   const [bulkItems, setBulkItems] = useState<string[]>([])
   const [bulkFileName, setBulkFileName] = useState<string | null>(null)
   const [busy, setBusy] = useState<BusyAction | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [bulkFileError, setBulkFileError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -41,6 +49,7 @@ export default function App() {
   const handleModeChange = useCallback((nextMode: QRMode) => {
     setMode(nextMode)
     setError(null)
+    setBulkFileError(null)
   }, [])
 
   const handleBulkFile = useCallback(async (file: File) => {
@@ -48,17 +57,56 @@ export default function App() {
       const text = await file.text()
       const items = parseBulkContent(text)
       if (items.length === 0) {
-        setError('File kosong atau tidak berisi teks valid')
+        setBulkFileError('File kosong atau tidak berisi teks valid')
+        setBulkItems([])
+        setBulkFileName(null)
+        return
+      }
+      if (items.length > MAX_BULK_ENTRIES) {
+        setBulkFileError(`Maksimal ${MAX_BULK_ENTRIES} entri per file (file ini ${items.length}).`)
         setBulkItems([])
         setBulkFileName(null)
         return
       }
       setBulkItems(items)
       setBulkFileName(file.name)
-      setError(null)
+      setBulkFileError(null)
     } catch {
-      setError('Gagal membaca file. Coba lagi.')
+      setBulkFileError('Gagal membaca file. Coba lagi.')
     }
+  }, [])
+
+  const handleBulkSourceChange = useCallback(
+    (nextSource: 'file' | 'paste') => {
+      setBulkSource(nextSource)
+      setBulkFileError(null)
+      if (nextSource === 'paste') {
+        setPasteText((current) => (current === '' ? bulkItems.join('\n') : current))
+      }
+    },
+    [bulkItems],
+  )
+
+  const handleBulkText = useCallback((text: string) => {
+    setPasteText(text)
+    const items = parseBulkContent(text)
+    if (items.length === 0) {
+      setBulkItems([])
+      setBulkFileName(null)
+      setBulkFileError(null)
+      return
+    }
+    if (items.length > MAX_BULK_ENTRIES) {
+      setBulkFileError(
+        `Maksimal ${MAX_BULK_ENTRIES} entri per file (file ini ${items.length}).`,
+      )
+      setBulkItems([])
+      setBulkFileName(null)
+      return
+    }
+    setBulkItems(items)
+    setBulkFileName(null)
+    setBulkFileError(null)
   }, [])
 
   const download = useCallback(
@@ -108,9 +156,12 @@ export default function App() {
   const resetAll = useCallback(() => {
     setConfig(DEFAULT_CONFIG)
     setMode('single')
+    setBulkSource('file')
+    setPasteText('')
     setBulkItems([])
     setBulkFileName(null)
     setError(null)
+    setBulkFileError(null)
     setCopied(false)
   }, [setConfig])
 
@@ -167,9 +218,14 @@ export default function App() {
               onChange={updateConfig}
               mode={mode}
               onModeChange={handleModeChange}
+              bulkSource={bulkSource}
+              onBulkSourceChange={handleBulkSourceChange}
+              pasteText={pasteText}
+              onBulkTextChange={handleBulkText}
               bulkFileName={bulkFileName}
               bulkCount={bulkItems.length}
               onBulkFileChange={handleBulkFile}
+              bulkFileError={bulkFileError}
             />
           </section>
 

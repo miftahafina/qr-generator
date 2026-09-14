@@ -12,7 +12,8 @@ tanpa iklan. Semua pemrosesan terjadi lokal di perangkat Anda.
 ## Fitur
 
 - Generate QR dari teks atau URL dengan preview realtime
-- Mode massal: unggah .txt/.csv, satu entri per baris, unduh sebagai ZIP
+- Mode massal: unggah file atau tempel teks (satu entri per baris), unduh sebagai ZIP
+- ZIP dilengkapi `daftar.txt` berisi pemetaan nomor ke konten
 - Unduh PNG atau SVG; mode massal langsung menghasilkan ZIP
 - Salin QR ke clipboard sebagai PNG (butuh secure context / HTTPS)
 - Kustomisasi ukuran, warna, margin, level koreksi error, dan bentuk titik

@@ -28,6 +28,8 @@ Cloudflare Pages.
 - [x] Tab input **Tunggal/Massal**: mode massal membaca file .txt/.csv (satu entri per
   baris) dan tombol Unduh menghasilkan ZIP kontekstual; mode tunggal tetap mengunduh
   file individual
+- [x] Mode massal mendukung tempel teks langsung dan menyertakan `daftar.txt`
+  (pemetaan nomor urut → konten) di dalam ZIP
 
 ## Non-goals (untuk sekarang)
 
@@ -92,6 +94,9 @@ Cloudflare Pages.
   `cursor: pointer` lewat base layer di `src/index.css`; disabled tetap `not-allowed`.
 - **Privasi**: `imageOptions.saveAsBlob` dimatikan agar tidak ada XHR internal;
   CSP `connect-src 'none'`.
+- **Nama file ZIP bulk**: `NNNN - nama.png/svg` dengan nomor urut 4 digit
+  (`0001`–`1000`), diikuti dash dan nama rapi yang dipotong maksimal 40 karakter.
+  ZIP juga memuat `daftar.txt` berisi `NNNN - <konten asli>` agar mapping akurat.
 
 ## Langkah deploy (Cloudflare Pages)
 

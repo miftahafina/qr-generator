@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
@@ -109,5 +109,54 @@ describe('App', () => {
 
     expect(await screen.findByText('daftar.txt — 2 entri')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Unduh ZIP' })).not.toBeDisabled()
+  })
+
+  it('menolak file di tab massal yang melebihi batas entri', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('tab', { name: 'Massal' }))
+
+    const input = screen.getByLabelText('File teks/URL (satu per baris)') as HTMLInputElement
+    const lines = Array.from({ length: 1001 }, (_, i) => `https://a.com/${i}`)
+    const file = new File([lines.join('\n')], 'banyak.txt', { type: 'text/plain' })
+    await user.upload(input, file)
+
+    expect(
+      await screen.findByText('Maksimal 1000 entri per file (file ini 1001).'),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/banyak.txt —/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Unduh ZIP' })).toBeDisabled()
+  })
+
+  it('memproses entri yang ditempel di tab massal', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('tab', { name: 'Massal' }))
+    await user.click(screen.getByRole('tab', { name: 'Tempel' }))
+
+    const textarea = screen.getByLabelText('Tempel teks/URL (satu per baris)')
+    fireEvent.change(textarea, { target: { value: 'https://a.com\nhttps://b.com' } })
+
+    expect(await screen.findByText('2 entri')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Unduh ZIP' })).not.toBeDisabled()
+  })
+
+  it('menolak tempelan yang melebihi batas entri', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('tab', { name: 'Massal' }))
+    await user.click(screen.getByRole('tab', { name: 'Tempel' }))
+
+    const lines = Array.from({ length: 1001 }, (_, i) => `https://a.com/${i}`)
+    const textarea = screen.getByLabelText('Tempel teks/URL (satu per baris)')
+    fireEvent.change(textarea, { target: { value: lines.join('\n') } })
+
+    expect(
+      await screen.findByText('Maksimal 1000 entri per file (file ini 1001).'),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Unduh ZIP' })).toBeDisabled()
   })
 })

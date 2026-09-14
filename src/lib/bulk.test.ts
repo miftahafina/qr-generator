@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import JSZip from 'jszip'
-import { createBulkZip, parseBulkContent } from './bulk'
+import { bulkRekapContent, createBulkZip, parseBulkContent } from './bulk'
 import { DEFAULT_CONFIG } from '../types'
 
 vi.mock('qr-code-styling', () => ({
@@ -23,6 +23,14 @@ describe('parseBulkContent', () => {
   })
 })
 
+describe('bulkRekapContent', () => {
+  it('memetakan nomor urut ke konten mentah', () => {
+    expect(bulkRekapContent(['https://a.com', ' halo '])).toBe(
+      '0001 - https://a.com\n0002 - halo',
+    )
+  })
+})
+
 describe('createBulkZip', () => {
   const loadFiles = async (blob: Blob) => {
     const zip = await JSZip.loadAsync(await blob.arrayBuffer())
@@ -31,13 +39,29 @@ describe('createBulkZip', () => {
       .sort()
   }
 
-  it('membuat satu file QR per entri', async () => {
+  it('membuat satu file QR per entri dengan nomor urut', async () => {
     const blob = await createBulkZip(['https://a.com', 'https://b.com'], DEFAULT_CONFIG, 'png')
-    expect(await loadFiles(blob)).toEqual(['a-com.png', 'b-com.png'])
+    expect(await loadFiles(blob)).toEqual([
+      '0001 - a-com.png',
+      '0002 - b-com.png',
+      'daftar.txt',
+    ])
   })
 
-  it('membuat nama file unik untuk entri yang sama', async () => {
+  it('memakai nomor urut unik untuk entri yang sama', async () => {
     const blob = await createBulkZip(['halo', 'halo'], DEFAULT_CONFIG, 'svg')
-    expect(await loadFiles(blob)).toEqual(['halo-2.svg', 'halo.svg'])
+    expect(await loadFiles(blob)).toEqual(['0001 - halo.svg', '0002 - halo.svg', 'daftar.txt'])
+  })
+
+  it('zero-padding nomor urut', async () => {
+    const blob = await createBulkZip(['x'], DEFAULT_CONFIG, 'png')
+    expect(await loadFiles(blob)).toEqual(['0001 - x.png', 'daftar.txt'])
+  })
+
+  it('menyertakan daftar.txt berisi pemetaan nomor ke konten', async () => {
+    const blob = await createBulkZip(['https://a.com', 'halo'], DEFAULT_CONFIG, 'png')
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer())
+    const content = await zip.file('daftar.txt')?.async('string')
+    expect(content).toBe('0001 - https://a.com\n0002 - halo')
   })
 })

@@ -9,9 +9,14 @@ interface Props {
   onChange: (patch: Partial<QRConfig>) => void
   mode: QRMode
   onModeChange: (mode: QRMode) => void
+  bulkSource: 'file' | 'paste'
+  onBulkSourceChange: (source: 'file' | 'paste') => void
+  pasteText: string
+  onBulkTextChange: (text: string) => void
   bulkFileName: string | null
   bulkCount: number
   onBulkFileChange: (file: File) => void
+  bulkFileError: string | null
 }
 
 const DOT_STYLES: { value: DotStyle; label: string }[] = [
@@ -37,7 +42,12 @@ const labelClass = 'text-sm font-medium text-slate-700 dark:text-slate-200'
 
 const MODES: { value: QRMode; label: string; hint: string }[] = [
   { value: 'single', label: 'Tunggal', hint: 'Buat satu QR dari teks atau URL.' },
-  { value: 'bulk', label: 'Massal', hint: 'Buat banyak QR dari file .txt/.csv, satu per baris.' },
+  { value: 'bulk', label: 'Massal', hint: 'Buat banyak QR dari file, satu per baris.' },
+]
+
+const BULK_SOURCES: { value: 'file' | 'paste'; label: string }[] = [
+  { value: 'file', label: 'File' },
+  { value: 'paste', label: 'Tempel' },
 ]
 
 export function QRForm({
@@ -45,9 +55,14 @@ export function QRForm({
   onChange,
   mode,
   onModeChange,
+  bulkSource,
+  onBulkSourceChange,
+  pasteText,
+  onBulkTextChange,
   bulkFileName,
   bulkCount,
   onBulkFileChange,
+  bulkFileError,
 }: Props) {
   const [showCustomization, setShowCustomization] = useState(false)
   const handleLogoChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -114,20 +129,73 @@ export function QRForm({
           </>
         ) : (
           <>
-            <label htmlFor="qr-bulk-file" className={labelClass}>
-              File teks/URL (satu per baris)
-            </label>
-            <input
-              id="qr-bulk-file"
-              type="file"
-              accept=".txt,.csv"
-              onChange={handleBulkFile}
-              className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-primary-hover dark:text-slate-300"
-            />
-            {bulkFileName && (
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {bulkFileName} — {bulkCount} entri
-              </p>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              Sumber
+            </span>
+            <div
+              role="tablist"
+              aria-label="Sumber entri massal"
+              className="flex rounded-lg bg-slate-100 p-0.5 dark:bg-slate-800"
+            >
+              {BULK_SOURCES.map((source) => (
+                <button
+                  key={source.value}
+                  type="button"
+                  role="tab"
+                  aria-selected={bulkSource === source.value}
+                  onClick={() => onBulkSourceChange(source.value)}
+                  className={`flex-1 rounded-md px-3 py-1 text-xs font-medium transition ${
+                    bulkSource === source.value
+                      ? 'bg-white text-primary shadow-sm dark:bg-slate-700 dark:text-primary-light'
+                      : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                  }`}
+                >
+                  {source.label}
+                </button>
+              ))}
+            </div>
+
+            {bulkSource === 'file' ? (
+              <>
+                <label htmlFor="qr-bulk-file" className={labelClass}>
+                  File teks/URL (satu per baris)
+                </label>
+                <input
+                  id="qr-bulk-file"
+                  type="file"
+                  accept=".txt,.csv"
+                  onChange={handleBulkFile}
+                  className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-primary-hover dark:text-slate-300"
+                />
+                {bulkFileName && (
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {bulkFileName} — {bulkCount} entri
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <label htmlFor="qr-bulk-text" className={labelClass}>
+                  Tempel teks/URL (satu per baris)
+                </label>
+                <textarea
+                  id="qr-bulk-text"
+                  value={pasteText}
+                  onChange={(event) => onBulkTextChange(event.target.value)}
+                  rows={5}
+                  spellCheck={false}
+                  placeholder={'https://contoh.com/baris-1\nhttps://contoh.com/baris-2'}
+                  className={`${inputClass} resize-y font-mono`}
+                />
+                {bulkCount > 0 && (
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {bulkCount} entri
+                  </p>
+                )}
+              </>
+            )}
+            {bulkFileError && (
+              <p className="text-xs text-red-600 dark:text-red-400">{bulkFileError}</p>
             )}
           </>
         )}

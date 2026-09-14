@@ -2,11 +2,19 @@ import JSZip from 'jszip'
 import { baseNameFor, createQRCode, getDownloadBlob, type ExportFormat } from './qr'
 import type { QRConfig } from '../types'
 
+export const MAX_BULK_ENTRIES = 1000
+
 export function parseBulkContent(text: string): string[] {
   return text
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line.length > 0)
+}
+
+export function bulkRekapContent(items: string[]): string {
+  return items
+    .map((item, index) => `${String(index + 1).padStart(4, '0')} - ${item.trim()}`)
+    .join('\n')
 }
 
 export async function createBulkZip(
@@ -15,22 +23,17 @@ export async function createBulkZip(
   format: ExportFormat,
 ): Promise<Blob> {
   const zip = new JSZip()
-  const used = new Set<string>()
 
-  for (const raw of items) {
-    const data = raw.trim()
-    const base = baseNameFor(data)
-    let filename = `${base}.${format}`
-    let counter = 2
-    while (used.has(filename)) {
-      filename = `${base}-${counter}.${format}`
-      counter += 1
-    }
-    used.add(filename)
+  for (let i = 0; i < items.length; i++) {
+    const data = items[i].trim()
+    const number = String(i + 1).padStart(4, '0')
+    const filename = `${number} - ${baseNameFor(data)}.${format}`
 
     const qr = createQRCode({ ...config, data })
     zip.file(filename, await getDownloadBlob(qr, format))
   }
+
+  zip.file('daftar.txt', bulkRekapContent(items))
 
   return zip.generateAsync({ type: 'blob' })
 }
