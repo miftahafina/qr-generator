@@ -119,6 +119,40 @@ describe('App', () => {
     expect(input).toHaveValue('Scan saya')
   })
 
+  it('menampilkan dan mengisi label per entri hanya di mode massal', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: /Pengaturan kustomisasi/ }))
+    expect(screen.queryByLabelText('Label per entri (opsional)')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('tab', { name: 'Massal' }))
+
+    const textarea = screen.getByLabelText('Label per entri (opsional)')
+    await user.type(textarea, 'Toko A{enter}Toko B')
+    expect(textarea).toHaveValue('Toko A\nToko B')
+  })
+
+  it('menampilkan peringatan bila jumlah label berbeda dari entri', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('tab', { name: 'Massal' }))
+    await user.click(screen.getByRole('button', { name: /Pengaturan kustomisasi/ }))
+    await user.click(screen.getByRole('tab', { name: 'Tempel' }))
+
+    fireEvent.change(screen.getByLabelText('Tempel teks/URL (satu per baris)'), {
+      target: { value: 'https://a.com\nhttps://b.com\nhttps://c.com' },
+    })
+    fireEvent.change(screen.getByLabelText('Label per entri (opsional)'), {
+      target: { value: 'Toko A\nToko B' },
+    })
+
+    expect(
+      await screen.findByText('2 dari 3 entri berlabel; 1 memakai label statis.'),
+    ).toBeInTheDocument()
+  })
+
   it('beralih ke tab massal dan menyembunyikan tombol salin', async () => {
     const user = userEvent.setup()
     render(<App />)

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ChangeEvent } from 'react'
 import type { DotStyle, ErrorCorrection, QRConfig, QRMode } from '../types'
+import { parseBulkLabels } from '../lib/bulk'
 import { ColorField } from './ColorField'
 import { ContentInput } from './ContentInput'
 import { DotStyleOption } from './DotStyleOption'
@@ -18,6 +19,8 @@ interface Props {
   bulkCount: number
   onBulkFileChange: (file: File) => void
   bulkFileError: string | null
+  bulkLabelsText: string
+  onBulkLabelsChange: (text: string) => void
 }
 
 const DOT_STYLES: { value: DotStyle; label: string }[] = [
@@ -64,8 +67,12 @@ export function QRForm({
   bulkCount,
   onBulkFileChange,
   bulkFileError,
+  bulkLabelsText,
+  onBulkLabelsChange,
 }: Props) {
   const [showCustomization, setShowCustomization] = useState(false)
+  const bulkLabels = parseBulkLabels(bulkLabelsText)
+  const labelCount = bulkLabels.filter((label) => label !== '').length
   const handleLogoChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
@@ -386,6 +393,33 @@ export function QRForm({
               Teks tampil rata tengah di bawah QR, mengikuti warna QR, dan ikut tersimpan di
               PNG/SVG.
             </p>
+            {mode === 'bulk' && (
+              <div className="space-y-2 border-t border-slate-200 pt-3 dark:border-slate-800">
+                <label htmlFor="qr-bulk-labels" className={labelClass}>
+                  Label per entri (opsional)
+                </label>
+                <textarea
+                  id="qr-bulk-labels"
+                  value={bulkLabelsText}
+                  onChange={(event) => onBulkLabelsChange(event.target.value)}
+                  rows={4}
+                  spellCheck={false}
+                  placeholder={'Toko A\nToko B\nToko C'}
+                  className={`${inputClass} resize-y font-mono`}
+                />
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Satu label per baris, sejajar dengan urutan entri. Baris kosong memakai label
+                  statis di atas.
+                </p>
+                {bulkCount > 0 && bulkLabelsText.trim() !== '' && labelCount !== bulkCount && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400">
+                    {labelCount < bulkCount
+                      ? `${labelCount} dari ${bulkCount} entri berlabel; ${bulkCount - labelCount} memakai label statis.`
+                      : `${labelCount} label untuk ${bulkCount} entri; ${labelCount - bulkCount} label terakhir diabaikan.`}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

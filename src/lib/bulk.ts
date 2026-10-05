@@ -12,6 +12,12 @@ export function parseBulkContent(text: string): string[] {
     .filter((line) => line.length > 0)
 }
 
+export function parseBulkLabels(text: string): string[] {
+  const lines = text.split(/\r?\n/).map((line) => line.trim())
+  while (lines.length > 0 && lines[lines.length - 1] === '') lines.pop()
+  return lines
+}
+
 export function bulkRekapContent(items: string[]): string {
   return items
     .map((item, index) => `${String(index + 1).padStart(4, '0')} - ${item.trim()}`)
@@ -22,6 +28,7 @@ export async function createBulkZip(
   items: string[],
   config: QRConfig,
   format: ExportFormat,
+  labels: string[] = [],
 ): Promise<Blob> {
   const zip = new JSZip()
 
@@ -29,9 +36,12 @@ export async function createBulkZip(
     const data = items[i].trim()
     const number = String(i + 1).padStart(4, '0')
     const filename = `${number} - ${baseNameFor(data)}.${format}`
+    const label = labels[i]?.trim() ?? ''
+    const itemConfig: QRConfig =
+      label === '' ? config : { ...config, labelEnabled: true, labelText: label }
 
-    const qr = createQRCode({ ...config, data })
-    zip.file(filename, await withLabelBlob(qr, config, format))
+    const qr = createQRCode({ ...itemConfig, data })
+    zip.file(filename, await withLabelBlob(qr, itemConfig, format))
   }
 
   zip.file('daftar.txt', bulkRekapContent(items))

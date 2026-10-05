@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { DownloadMenu } from './components/DownloadMenu'
 import { QRForm } from './components/QRForm'
 import { QRPreview } from './components/QRPreview'
@@ -13,7 +13,13 @@ import {
   type ExportFormat,
 } from './lib/qr'
 import { withLabelBlob } from './lib/label'
-import { MAX_BULK_ENTRIES, bulkZipFileName, createBulkZip, parseBulkContent } from './lib/bulk'
+import {
+  MAX_BULK_ENTRIES,
+  bulkZipFileName,
+  createBulkZip,
+  parseBulkContent,
+  parseBulkLabels,
+} from './lib/bulk'
 import { loadMode, saveMode } from './lib/storage'
 import { buildPayload } from './lib/payload'
 import { DEFAULT_CONFIG, type BusyAction, type QRConfig, type QRMode } from './types'
@@ -24,6 +30,7 @@ export default function App() {
   const [mode, setMode] = useState<QRMode>(loadMode)
   const [bulkSource, setBulkSource] = useState<'file' | 'paste'>('file')
   const [pasteText, setPasteText] = useState('')
+  const [bulkLabelsText, setBulkLabelsText] = useState('')
   const [bulkItems, setBulkItems] = useState<string[]>([])
   const [bulkFileName, setBulkFileName] = useState<string | null>(null)
   const [busy, setBusy] = useState<BusyAction | null>(null)
@@ -103,6 +110,12 @@ export default function App() {
     setBulkFileError(null)
   }, [])
 
+  const handleBulkLabelsChange = useCallback((text: string) => {
+    setBulkLabelsText(text)
+  }, [])
+
+  const bulkLabels = useMemo(() => parseBulkLabels(bulkLabelsText), [bulkLabelsText])
+
   const download = useCallback(
     async (format: ExportFormat) => {
       setBusy(format)
@@ -112,7 +125,7 @@ export default function App() {
           if (bulkItems.length === 0) {
             throw new Error('Pilih file berisi teks/URL untuk mode massal')
           }
-          const blob = await createBulkZip(bulkItems, config, format)
+          const blob = await createBulkZip(bulkItems, config, format, bulkLabels)
           triggerDownload(blob, bulkZipFileName())
         } else {
           const data = buildPayload(config)
@@ -126,7 +139,7 @@ export default function App() {
         setBusy(null)
       }
     },
-    [config, mode, bulkItems],
+    [config, mode, bulkItems, bulkLabels],
   )
 
   const copy = useCallback(async () => {
@@ -154,6 +167,7 @@ export default function App() {
     setMode('single')
     setBulkSource('file')
     setPasteText('')
+    setBulkLabelsText('')
     setBulkItems([])
     setBulkFileName(null)
     setError(null)
@@ -163,7 +177,11 @@ export default function App() {
 
   const isBulk = mode === 'bulk'
   const payload = isBulk ? (bulkItems[0] ?? '') : buildPayload(config)
-  const previewConfig = { ...config, data: payload }
+  const firstBulkLabel = bulkLabels[0]?.trim() ?? ''
+  const previewConfig =
+    isBulk && firstBulkLabel !== ''
+      ? { ...config, data: payload, labelEnabled: true, labelText: firstBulkLabel }
+      : { ...config, data: payload }
   const bulkReady = !isBulk || bulkItems.length > 0
 
   return (
@@ -223,6 +241,8 @@ export default function App() {
               bulkCount={bulkItems.length}
               onBulkFileChange={handleBulkFile}
               bulkFileError={bulkFileError}
+              bulkLabelsText={bulkLabelsText}
+              onBulkLabelsChange={handleBulkLabelsChange}
             />
           </section>
 

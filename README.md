@@ -21,6 +21,7 @@ tanpa iklan. Semua pemrosesan terjadi lokal di perangkat Anda.
 - Latar transparan (PNG & SVG)
 - Upload logo di tengah QR
 - Label teks opsional di bawah QR (rata tengah, ikut di PNG/SVG/clipboard/ZIP)
+- Label per entri mode massal (textarea, satu label per baris)
 - Teks/URL dan semua opsi otomatis tersimpan di browser (localStorage)
 - Dark mode
 

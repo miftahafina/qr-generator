@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import JSZip from 'jszip'
-import { bulkRekapContent, createBulkZip, parseBulkContent } from './bulk'
+import { bulkRekapContent, createBulkZip, parseBulkContent, parseBulkLabels } from './bulk'
 import { DEFAULT_CONFIG } from '../types'
 
 vi.mock('qr-code-styling', () => ({
@@ -36,6 +36,24 @@ describe('parseBulkContent', () => {
 describe('bulkRekapContent', () => {
   it('memetakan nomor urut ke konten mentah', () => {
     expect(bulkRekapContent(['https://a.com', ' halo '])).toBe('0001 - https://a.com\n0002 - halo')
+  })
+})
+
+describe('parseBulkLabels', () => {
+  it('memisah per baris dan memangkas spasi', () => {
+    expect(parseBulkLabels('Toko A\n  Toko B \nC')).toEqual(['Toko A', 'Toko B', 'C'])
+  })
+
+  it('mempertahankan baris kosong di tengah agar pemetaan indeks akurat', () => {
+    expect(parseBulkLabels('A\n\nC')).toEqual(['A', '', 'C'])
+  })
+
+  it('membuang baris kosong di akhir', () => {
+    expect(parseBulkLabels('A\nB\n')).toEqual(['A', 'B'])
+  })
+
+  it('mengembalikan array kosong untuk teks kosong', () => {
+    expect(parseBulkLabels('   ')).toEqual([])
   })
 })
 
@@ -75,5 +93,26 @@ describe('createBulkZip', () => {
     const zip = await JSZip.loadAsync(await blob.arrayBuffer())
     const content = await zip.file('0001 - a-com.svg')?.async('string')
     expect(content).toContain('Scan saya')
+  })
+
+  it('memakai label per entri sesuai urutan', async () => {
+    const blob = await createBulkZip(['https://a.com', 'https://b.com'], DEFAULT_CONFIG, 'svg', [
+      'Toko A',
+      'Toko B',
+    ])
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer())
+    expect(await zip.file('0001 - a-com.svg')?.async('string')).toContain('Toko A')
+    expect(await zip.file('0002 - b-com.svg')?.async('string')).toContain('Toko B')
+  })
+
+  it('memakai label statis untuk segmen kosong', async () => {
+    const config = { ...DEFAULT_CONFIG, labelEnabled: true, labelText: 'Statis' }
+    const blob = await createBulkZip(['https://a.com', 'https://b.com'], config, 'svg', [
+      '',
+      'Toko B',
+    ])
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer())
+    expect(await zip.file('0001 - a-com.svg')?.async('string')).toContain('Statis')
+    expect(await zip.file('0002 - b-com.svg')?.async('string')).toContain('Toko B')
   })
 })

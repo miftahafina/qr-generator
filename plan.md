@@ -27,6 +27,8 @@ Cloudflare Pages.
 - [x] Upload logo di tengah QR (error correction otomatis ke `H`)
 - [x] Label teks opsional di bawah QR (rata tengah, mengikuti warna QR, ikut di
       PNG/SVG/clipboard/ZIP)
+- [x] Label per entri di mode massal lewat textarea, satu label per baris (urutan entri;
+      baris kosong memakai label statis)
 - [x] Simpan teks/URL dan semua opsi ke localStorage (auto-restore saat reload)
 - [x] Dark mode (tersimpan di localStorage)
 - [x] Tab input **Tunggal/Massal**: mode massal membaca file .txt/.csv (satu entri per
@@ -83,6 +85,7 @@ Cloudflare Pages.
 - [x] Verifikasi build/lint/typecheck/test
 - [x] Polish UI: menu unduh, warna primary, kursor interaktif
 - [x] Label teks opsional di bawah QR
+- [x] Label per entri mode massal (textarea, satu label per baris)
 
 ## Keputusan
 
@@ -107,10 +110,12 @@ Cloudflare Pages.
   ZIP juga memuat `daftar.txt` berisi `NNNN - <konten asli>` agar mapping akurat.
 - **Label**: opsional, di-enable lewat checkbox di kustomisasi. Teks rata tengah di
   bawah QR, warna mengikuti `fgColor`, ukuran font proporsional terhadap `size`, dan
-  teks panjang dibungkus otomatis. Satu label yang sama dipakai untuk semua QR di mode
-  massal. Komposisi dilakukan sendiri: canvas untuk PNG, penyisipan `<text>` + tinggi
-  `viewBox` untuk SVG; pratinjau memakai jalur SVG agar proporsional. Font memakai
-  system-ui (tanpa remote font).
+  teks panjang dibungkus otomatis. Di mode massal ada textarea label per entri, satu label
+  per baris, dipetakan sesuai urutan; baris kosong/tidak ada memakai label statis (jika
+  aktif). Jumlah label boleh berbeda dari jumlah entri: kekurangan memakai label statis,
+  kelebihan diabaikan, dengan peringatan jelas. Komposisi dilakukan sendiri: canvas untuk
+  PNG, penyisipan `<text>` + tinggi `viewBox` untuk SVG; pratinjau memakai jalur SVG agar
+  proporsional. Font memakai system-ui (tanpa remote font).
 
 ## Langkah deploy (Cloudflare Pages)
 
