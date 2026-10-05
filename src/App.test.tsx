@@ -27,6 +27,12 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: 'Salin ke clipboard' })).toBeInTheDocument()
   })
 
+  it('menampilkan tautan ke repositori GitHub', () => {
+    render(<App />)
+    const link = screen.getByRole('link', { name: 'Repositori GitHub' })
+    expect(link).toHaveAttribute('href', 'https://github.com/miftahafina/qr-generator')
+  })
+
   it('menampilkan opsi PNG dan SVG lewat menu unduh', async () => {
     const user = userEvent.setup()
     render(<App />)
