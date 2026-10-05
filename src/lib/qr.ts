@@ -9,9 +9,12 @@ export function cornerStyleFor(dotStyle: DotStyle): 'square' | 'dot' | 'extra-ro
   return 'extra-rounded'
 }
 
-export function buildOptions(config: QRConfig): Partial<Options> {
+export function buildOptions(
+  config: QRConfig,
+  type: 'canvas' | 'svg' = 'canvas',
+): Partial<Options> {
   return {
-    type: 'canvas',
+    type,
     width: config.size,
     height: config.size,
     margin: config.margin,
@@ -54,13 +57,11 @@ export function canCopyImage(): boolean {
   )
 }
 
-export async function copyImageToClipboard(qr: QRCodeStyling): Promise<void> {
+export async function copyImageToClipboard(png: Blob): Promise<void> {
   if (!canCopyImage()) {
     throw new Error('Clipboard gambar tidak didukung browser ini')
   }
-  const item = new ClipboardItem({
-    'image/png': getDownloadBlob(qr, 'png'),
-  })
+  const item = new ClipboardItem({ 'image/png': png })
   await navigator.clipboard.write([item])
 }
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { buildOptions } from '../lib/qr'
+import { applyLabelToSvgElement } from '../lib/label'
 import QRCodeStyling from 'qr-code-styling'
 import type { QRConfig } from '../types'
 
@@ -14,9 +15,11 @@ export function QRPreview({ config }: Props) {
     const container = containerRef.current
     if (!container) return
 
-    const qr = new QRCodeStyling(buildOptions(config))
+    const qr = new QRCodeStyling(buildOptions(config, 'svg'))
     container.innerHTML = ''
     qr.append(container)
+    const svg = container.querySelector('svg')
+    if (svg) applyLabelToSvgElement(svg, config)
 
     return () => {
       container.innerHTML = ''

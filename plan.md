@@ -25,6 +25,8 @@ Cloudflare Pages.
 - [x] Kustomisasi: ukuran, warna foreground/background, margin, level koreksi error, bentuk titik
 - [x] Latar transparan (PNG & SVG)
 - [x] Upload logo di tengah QR (error correction otomatis ke `H`)
+- [x] Label teks opsional di bawah QR (rata tengah, mengikuti warna QR, ikut di
+      PNG/SVG/clipboard/ZIP)
 - [x] Simpan teks/URL dan semua opsi ke localStorage (auto-restore saat reload)
 - [x] Dark mode (tersimpan di localStorage)
 - [x] Tab input **Tunggal/Massal**: mode massal membaca file .txt/.csv (satu entri per
@@ -80,6 +82,7 @@ Cloudflare Pages.
 - [x] Privacy headers + deploy config Cloudflare Pages
 - [x] Verifikasi build/lint/typecheck/test
 - [x] Polish UI: menu unduh, warna primary, kursor interaktif
+- [x] Label teks opsional di bawah QR
 
 ## Keputusan
 
@@ -102,6 +105,12 @@ Cloudflare Pages.
 - **Nama file ZIP bulk**: `NNNN - nama.png/svg` dengan nomor urut 4 digit
   (`0001`–`1000`), diikuti dash dan nama rapi yang dipotong maksimal 40 karakter.
   ZIP juga memuat `daftar.txt` berisi `NNNN - <konten asli>` agar mapping akurat.
+- **Label**: opsional, di-enable lewat checkbox di kustomisasi. Teks rata tengah di
+  bawah QR, warna mengikuti `fgColor`, ukuran font proporsional terhadap `size`, dan
+  teks panjang dibungkus otomatis. Satu label yang sama dipakai untuk semua QR di mode
+  massal. Komposisi dilakukan sendiri: canvas untuk PNG, penyisipan `<text>` + tinggi
+  `viewBox` untuk SVG; pratinjau memakai jalur SVG agar proporsional. Font memakai
+  system-ui (tanpa remote font).
 
 ## Langkah deploy (Cloudflare Pages)
 

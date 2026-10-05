@@ -359,6 +359,34 @@ export function QRForm({
               Menambahkan logo otomatis memakai koreksi error H.
             </p>
           </div>
+
+          <div className="space-y-2 rounded-lg border border-slate-200 p-3 dark:border-slate-800">
+            <label htmlFor="qr-label-enabled" className="flex items-center gap-2">
+              <input
+                id="qr-label-enabled"
+                type="checkbox"
+                checked={config.labelEnabled}
+                onChange={(event) => onChange({ labelEnabled: event.target.checked })}
+                className="h-4 w-4 accent-primary"
+              />
+              <span className={labelClass}>Label di bawah QR</span>
+            </label>
+            <input
+              id="qr-label"
+              type="text"
+              value={config.labelText}
+              maxLength={120}
+              disabled={!config.labelEnabled}
+              aria-label="Teks label"
+              placeholder="Contoh: Scan untuk info"
+              onChange={(event) => onChange({ labelText: event.target.value })}
+              className={`${inputClass} disabled:cursor-not-allowed disabled:opacity-60`}
+            />
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Teks tampil rata tengah di bawah QR, mengikuti warna QR, dan ikut tersimpan di
+              PNG/SVG.
+            </p>
+          </div>
         </div>
       )}
     </form>

@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type QRCodeStyling from 'qr-code-styling'
 import {
   buildOptions,
   canCopyImage,
@@ -62,6 +61,10 @@ describe('buildOptions', () => {
     const options = buildOptions({ ...DEFAULT_CONFIG, transparentBackground: true })
     expect(options.backgroundOptions).toEqual({ color: 'transparent' })
   })
+
+  it('memakai tipe svg untuk pratinjau', () => {
+    expect(buildOptions({ ...DEFAULT_CONFIG }, 'svg').type).toBe('svg')
+  })
 })
 
 describe('createQRCode', () => {
@@ -80,8 +83,7 @@ describe('clipboard', () => {
     vi.unstubAllGlobals()
   })
 
-  const fakeQr = (blob: Blob) =>
-    ({ getRawData: vi.fn().mockResolvedValue(blob) }) as unknown as QRCodeStyling
+  const png = () => new Blob(['qr'], { type: 'image/png' })
 
   it('mendeteksi dukungan clipboard', () => {
     vi.stubGlobal('ClipboardItem', class {})
@@ -106,7 +108,7 @@ describe('clipboard', () => {
     vi.stubGlobal('ClipboardItem', FakeClipboardItem)
     vi.stubGlobal('navigator', { clipboard: { write } })
 
-    await copyImageToClipboard(fakeQr(new Blob(['qr'], { type: 'image/png' })))
+    await copyImageToClipboard(png())
 
     expect(write).toHaveBeenCalledTimes(1)
     expect(captured).toHaveLength(1)
@@ -119,7 +121,7 @@ describe('clipboard', () => {
     vi.stubGlobal('ClipboardItem', undefined)
     vi.stubGlobal('navigator', { clipboard: undefined })
 
-    await expect(copyImageToClipboard(fakeQr(new Blob(['qr'])))).rejects.toThrow(
+    await expect(copyImageToClipboard(png())).rejects.toThrow(
       'Clipboard gambar tidak didukung browser ini',
     )
   })

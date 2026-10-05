@@ -35,11 +35,25 @@ describe('parseConfig', () => {
     expect(config.dotStyle).toBe(DEFAULT_CONFIG.dotStyle)
     expect(config.errorCorrection).toBe(DEFAULT_CONFIG.errorCorrection)
     expect(config.logo).toBeNull()
+    expect(config.labelEnabled).toBe(DEFAULT_CONFIG.labelEnabled)
+    expect(config.labelText).toBe(DEFAULT_CONFIG.labelText)
   })
 
   it('menerima logo berupa data URL', () => {
     const logo = 'data:image/png;base64,abc'
     expect(parseConfig(JSON.stringify({ logo })).logo).toBe(logo)
+  })
+
+  it('membaca pengaturan label', () => {
+    const config = parseConfig(JSON.stringify({ labelEnabled: true, labelText: 'Scan saya' }))
+    expect(config.labelEnabled).toBe(true)
+    expect(config.labelText).toBe('Scan saya')
+  })
+
+  it('mengabaikan labelEnabled yang bukan boolean', () => {
+    expect(parseConfig(JSON.stringify({ labelEnabled: 'ya' })).labelEnabled).toBe(
+      DEFAULT_CONFIG.labelEnabled,
+    )
   })
 })
 

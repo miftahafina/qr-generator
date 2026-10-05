@@ -1,5 +1,6 @@
 import JSZip from 'jszip'
-import { baseNameFor, createQRCode, getDownloadBlob, type ExportFormat } from './qr'
+import { baseNameFor, createQRCode, type ExportFormat } from './qr'
+import { withLabelBlob } from './label'
 import type { QRConfig } from '../types'
 
 export const MAX_BULK_ENTRIES = 1000
@@ -30,7 +31,7 @@ export async function createBulkZip(
     const filename = `${number} - ${baseNameFor(data)}.${format}`
 
     const qr = createQRCode({ ...config, data })
-    zip.file(filename, await getDownloadBlob(qr, format))
+    zip.file(filename, await withLabelBlob(qr, config, format))
   }
 
   zip.file('daftar.txt', bulkRekapContent(items))

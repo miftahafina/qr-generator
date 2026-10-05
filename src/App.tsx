@@ -9,10 +9,10 @@ import {
   copyImageToClipboard,
   createQRCode,
   fileNameFor,
-  getDownloadBlob,
   triggerDownload,
   type ExportFormat,
 } from './lib/qr'
+import { withLabelBlob } from './lib/label'
 import { MAX_BULK_ENTRIES, bulkZipFileName, createBulkZip, parseBulkContent } from './lib/bulk'
 import { loadMode, saveMode } from './lib/storage'
 import { buildPayload } from './lib/payload'
@@ -117,7 +117,7 @@ export default function App() {
         } else {
           const data = buildPayload(config)
           const qr = createQRCode({ ...config, data })
-          const blob = await getDownloadBlob(qr, format)
+          const blob = await withLabelBlob(qr, config, format)
           triggerDownload(blob, fileNameFor(data, format))
         }
       } catch (err) {
@@ -133,7 +133,8 @@ export default function App() {
     setBusy('copy')
     setError(null)
     try {
-      await copyImageToClipboard(createQRCode({ ...config, data: buildPayload(config) }))
+      const qr = createQRCode({ ...config, data: buildPayload(config) })
+      await copyImageToClipboard(await withLabelBlob(qr, config, 'png'))
       setCopied(true)
     } catch {
       setError('Gagal menyalin. Browser mungkin tidak mendukung.')

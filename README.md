@@ -20,6 +20,7 @@ tanpa iklan. Semua pemrosesan terjadi lokal di perangkat Anda.
 - Kustomisasi ukuran, warna, margin, level koreksi error, dan bentuk titik
 - Latar transparan (PNG & SVG)
 - Upload logo di tengah QR
+- Label teks opsional di bawah QR (rata tengah, ikut di PNG/SVG/clipboard/ZIP)
 - Teks/URL dan semua opsi otomatis tersimpan di browser (localStorage)
 - Dark mode
 

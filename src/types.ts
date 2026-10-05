@@ -41,6 +41,8 @@ export interface QRConfig {
   dotStyle: DotStyle
   errorCorrection: ErrorCorrectionLevel
   logo: string | null
+  labelEnabled: boolean
+  labelText: string
 }
 
 export type QRMode = 'single' | 'bulk'
@@ -59,4 +61,6 @@ export const DEFAULT_CONFIG: QRConfig = {
   dotStyle: 'square',
   errorCorrection: 'M',
   logo: null,
+  labelEnabled: false,
+  labelText: '',
 }

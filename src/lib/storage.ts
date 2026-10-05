@@ -113,6 +113,9 @@ export function parseConfig(raw: string | null): QRConfig {
       : DEFAULT_CONFIG.errorCorrection,
     logo:
       typeof parsed.logo === 'string' && parsed.logo.startsWith('data:image/') ? parsed.logo : null,
+    labelEnabled:
+      typeof parsed.labelEnabled === 'boolean' ? parsed.labelEnabled : DEFAULT_CONFIG.labelEnabled,
+    labelText: parseString(parsed.labelText, DEFAULT_CONFIG.labelText),
   }
 }
 

@@ -5,7 +5,15 @@ import { DEFAULT_CONFIG } from '../types'
 
 vi.mock('qr-code-styling', () => ({
   default: class {
-    async getRawData() {
+    async getRawData(format?: string) {
+      if (format === 'svg') {
+        return new Blob(
+          [
+            '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320"></svg>',
+          ],
+          { type: 'image/svg+xml' },
+        )
+      }
       return new Blob(['qr'], { type: 'image/png' })
     }
   },
@@ -59,5 +67,13 @@ describe('createBulkZip', () => {
     const zip = await JSZip.loadAsync(await blob.arrayBuffer())
     const content = await zip.file('daftar.txt')?.async('string')
     expect(content).toBe('0001 - https://a.com\n0002 - halo')
+  })
+
+  it('menyertakan label yang sama di setiap QR massal', async () => {
+    const config = { ...DEFAULT_CONFIG, labelEnabled: true, labelText: 'Scan saya' }
+    const blob = await createBulkZip(['https://a.com'], config, 'svg')
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer())
+    const content = await zip.file('0001 - a-com.svg')?.async('string')
+    expect(content).toContain('Scan saya')
   })
 })

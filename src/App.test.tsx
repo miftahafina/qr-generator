@@ -102,6 +102,23 @@ describe('App', () => {
     expect(option).toHaveAttribute('aria-pressed', 'true')
   })
 
+  it('mengaktifkan dan mengisi label di bawah QR', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: /Pengaturan kustomisasi/ }))
+
+    const toggle = screen.getByLabelText('Label di bawah QR')
+    const input = screen.getByLabelText('Teks label')
+    expect(input).toBeDisabled()
+
+    await user.click(toggle)
+    expect(input).toBeEnabled()
+
+    await user.type(input, 'Scan saya')
+    expect(input).toHaveValue('Scan saya')
+  })
+
   it('beralih ke tab massal dan menyembunyikan tombol salin', async () => {
     const user = userEvent.setup()
     render(<App />)
